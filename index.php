@@ -49,6 +49,13 @@
     ];
 ?>
 
+<?php
+function format_price(int $price) : string {
+    $formatted_price = number_format(ceil($price), 0, null, " ") . "₽";
+    return $formatted_price;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -124,7 +131,7 @@
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$lot['price']?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=format_price($lot['price'])?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
