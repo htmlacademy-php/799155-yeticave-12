@@ -42,8 +42,6 @@ CREATE TABLE users (
   name VARCHAR(64) NOT NULL UNIQUE,
   password VARCHAR(64) NOT NULL UNIQUE,
   contact TEXT NOT NULL,
-  bets_id VARCHAR(64) DEFAULT NULL,
-  lots_id VARCHAR(64) DEFAULT NULL
 );
 
 CREATE INDEX email_ind ON users(email);
