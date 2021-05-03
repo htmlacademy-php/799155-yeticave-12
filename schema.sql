@@ -41,7 +41,7 @@ CREATE TABLE users (
   email VARCHAR(64) NOT NULL UNIQUE,
   name VARCHAR(64) NOT NULL UNIQUE,
   password VARCHAR(64) NOT NULL UNIQUE,
-  contact TEXT NOT NULL,
+  contact TEXT NOT NULL
 );
 
 CREATE INDEX email_ind ON users(email);
