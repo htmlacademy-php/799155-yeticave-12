@@ -48,16 +48,15 @@ class Database {
     private $error;
     private $name;
 
-    public function __construct($name, $err = "")
+    public function __construct($name)
     {
         $this->name = $name;
-        $this->error = $err;
+        $this->error = null;
         $this->connection = mysqli_connect("localhost", "root", "", $name);
         if ($this->connection == false) {
             $this->error = mysqli_connect_error();
         } else {
             mysqli_set_charset($this->connection, "utf8");
-            $this->error = null;
         }
     }
 
