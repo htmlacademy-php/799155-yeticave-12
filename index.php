@@ -5,59 +5,39 @@ require_once('functions.php');
 $is_auth = rand(0, 1);
 $title = 'YetiCave';
 $user_name = 'Alex'; // укажите здесь ваше имя
+$cats = array();
+$lots = array();
+$sql = "";
 
-$cats = [
-    "Доски и лыжи", 
-    "Крепления", 
-    "Ботинки", 
-    "Одежда", 
-    "Инструменты", 
-    "Разное"
-];
-$lots = [
-    [
-        'name' => '2014 Rossignol District Snowboard',
-        'cat' => 'Доски и лыжи',
-        'price' => '1099',
-        'url' => 'img/lot-1.jpg',
-        'expired' => '2021-05-02',
-    ],
-    [
-        'name' => 'DC Ply Mens 2016/2017 Snowboard',
-        'cat' => 'Доски и лыжи',
-        'price' => '159999',
-        'url' => 'img/lot-2.jpg',
-        'expired' => '2021-05-09',
-    ],
-    [
-        'name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'cat' => 'Крепления',
-        'price' => '8000',
-        'url' => 'img/lot-3.jpg',
-        'expired' => '2021-05-08',
-    ],
-    [
-        'name' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'cat' => 'Ботинки',
-        'price' => '10999',
-        'url' => 'img/lot-4.jpg',
-        'expired' => '2021-05-07',
-    ],
-    [
-        'name' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'cat' => 'Одежда',
-        'price' => '7500',
-        'url' => 'img/lot-5.jpg',
-        'expired' => '2021-05-06',
-    ],
-    [
-        'name' => 'Маска Oakley Canopy',
-        'cat' => 'Разное',
-        'price' => '5400',
-        'url' => 'img/lot-6.jpg',
-        'expired' => '2021-05-04',
-    ]
-];
+//установим связь с БД
+$base = new Database("yeticave");
+
+//заполним список категорий из БД
+if ($base->is_ok()) {
+    $sql = "SELECT name, code FROM cats";
+    $result = $base->query($sql);
+    if ($base->is_ok()) {
+        $cats = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } 
+}
+
+$sql = "INSERT INTO lots SET dt_add = NOW(), name = 'Зимний Шлем Alpina 2020-21 Chute Night Blue Matt'," . 
+" descr = 'Универсальный шлем для катания на горных лыжах или сноуборде, созданный на базе легкой и прочной конструкции inmold'," .
+" img_url = 'img/lot-7.jpg', dt_expired = DATE_ADD(NOW(), INTERVAL 11 DAY), price = 4299, bet_step = '100', cat_id = '6', author_id = '2'";
+
+//заполним список лотов из БД
+if ($base->is_ok()) {
+    //для добавления нового лота в базу раскомментировать следующую строку
+    //$base->query($sql);
+    if ($base->is_ok()) {
+        $sql = "SELECT l.name, descr, price, img_url, dt_add, dt_expired, c.name as cat_name, cat_id" . 
+        " FROM lots l JOIN cats c ON c.id = l.cat_id WHERE dt_expired > NOW() ORDER BY dt_add DESC";
+        $result = $base->query($sql);
+        if ($base->is_ok()) {
+            $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } 
+    }
+}
 
 $main_content = include_template('main.php', [
     'cats' => $cats,
