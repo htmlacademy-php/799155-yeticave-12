@@ -43,40 +43,4 @@ function get_time_left(string $time)  {
     return [$hours, $mins, $s_hours, $s_mins];
 }
 
-class Database {
-    private $connection;
-    private $error;
-    private $name;
-
-    public function __construct($name)
-    {
-        $this->name = $name;
-        $this->error = null;
-        $this->connection = mysqli_connect("localhost", "root", "", $name);
-        if ($this->connection == false) {
-            $this->error = mysqli_connect_error();
-        } else {
-            mysqli_set_charset($this->connection, "utf8");
-        }
-    }
-
-    public function is_ok() {
-        return $this->error == null;
-    }
-
-    public function get_error() {
-        return $this->error;
-    }
-
-    public function query($sql) {
-        $result = mysqli_query($this->connection, $sql);
-        if ($result == false) {
-            $this->error = mysqli_error($this->connection);
-         } else {
-            $this->error = null;
-        }
-        return $result;
-    }
-}
-
 ?>
