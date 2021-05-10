@@ -23,17 +23,25 @@ class Database {
     }
 
     public function query($sql) {
-      $this->error = null;
-      $result = mysqli_query($this->connection, $sql);
-      if ($result == false) {
-          $this->error = mysqli_error($this->connection);
+      if ($this->connection) {
+        $this->error = null;
+        $result = mysqli_query($this->connection, $sql);
+        if ($result == false) {
+            $this->error = mysqli_error($this->connection);
+        }
+        return $result;
+      } else {
+        return false;
       }
-      return $result;
     }
 
     public function prepare($sql) {
-      $this->error = null;
-      $stmt = mysqli_prepare($this->connection, $sql);
-      return $stmt;
+      if ($this->connection) {
+        $this->error = null;
+        $stmt = mysqli_prepare($this->connection, $sql);
+        return $stmt;
+      } else {
+        return false;
+      }
     }
 }
