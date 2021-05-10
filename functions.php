@@ -42,4 +42,5 @@ function get_time_left(string $time)  {
     }
     return [$hours, $mins, $s_hours, $s_mins];
 }
+
 ?>
