@@ -24,13 +24,13 @@
                 </div>
                 <div class="lot__info">
                     <span class="lot__category"><?=htmlspecialchars($lot['cat_name'])?></span>
-                    <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?=htmlspecialchars($lot['name'])?></a></h3>
+                    <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?=$lot['id']?>"><?=htmlspecialchars($lot['name'])?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=format_price(strip_tags($lot['price']))?></span>
+                            <span class="lot__cost"><?=formatPrice(strip_tags($lot['price']))?></span>
                         </div>
-                        <?php $time_left = get_time_left(strip_tags($lot['dt_expired'])); ?>
+                        <?php $time_left = getTimeLeft(strip_tags($lot['dt_expired'])); ?>
                         <?php if ($time_left == false) : ?>
                         <div class="lot__timer timer timer--finishing">
                             <?='--:--';?>
