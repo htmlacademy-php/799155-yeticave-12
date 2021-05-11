@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
   $id = intval($_GET['id']);
   if ($repo->isOk()) {
     $cats = $repo->getAllCategories();
-    $lot = $repo->getLot(12);
+    $lot = $repo->getLot($id);
     if ($repo->isOk()) {
       $lot_content = include_template('lot.php', [
         'lot' => $lot,
