@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><?=$title;?></title>
+    <title><?=htmlspecialchars($title);?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
 </head>
@@ -11,7 +11,7 @@
 
 <header class="main-header">
     <div class="main-header__container container">
-        <h1 class="visually-hidden"><?=$title;?></h1>
+        <h1 class="visually-hidden"><?=htmlspecialchars($title);?></h1>
         <a class="main-header__logo">
             <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
         </a>
