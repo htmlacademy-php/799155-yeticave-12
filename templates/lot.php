@@ -35,7 +35,7 @@
                 <span class="lot-item__cost"><?=formatPrice(strip_tags($lot['price']))?></span>
               </div>
               <div class="lot-item__min-cost">
-                Мин. ставка <span>12 000 р</span>
+                Мин. ставка <span><?=formatPrice(strip_tags($lot['price']) + $lot['bet_step'])?></span>
               </div>
             </div>
             <form class="lot-item__form visually-hidden" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
