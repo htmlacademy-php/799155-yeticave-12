@@ -3,6 +3,10 @@ class Database {
     private $connection;
     private $error;
 
+    protected function setError(string $error) {
+      $this->error = $error;
+    }
+    
     public function __construct()
     {
       $this->error = null;

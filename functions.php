@@ -8,7 +8,7 @@
  * @return $formatted_price Форматированная строка с ценой
  */
 
-function format_price(float $price) : string {
+function formatPrice(float $price) : string {
     $formatted_price = number_format(ceil($price), 0, null, " ") . "₽";
     return $formatted_price;
 }
@@ -20,7 +20,7 @@ function format_price(float $price) : string {
  * @return [$hours, $mins, $s_hours, $s_mins] количество целых часов и остатка минут и их строковый вариант
  */
 
-function get_time_left(string $time)  {
+function getTimeLeft(string $time)  {
     if (!is_date_valid($time)) {
         return false;
     }

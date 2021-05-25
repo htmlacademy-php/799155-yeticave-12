@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Александр Зобнин](https://up.htmlacademy.ru/php/12/user/799155).
-* Наставник: [Павел Александров](https://up.htmlacademy.ru/php/12/user/1387451).
+* Наставник: [Анна Смоленцева](https://up.htmlacademy.ru/php/12/user/1402027).
 
 ---
 

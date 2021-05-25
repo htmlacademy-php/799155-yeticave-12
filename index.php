@@ -3,7 +3,7 @@ require_once('helpers.php');
 require_once('functions.php');
 require_once('Repository.php');
 
-$is_auth = rand(0, 1);
+$is_auth = 0; //rand(0, 1);
 $title = 'YetiCave';
 $user_name = 'Alex'; // укажите здесь ваше имя
 $cats = array();
@@ -47,6 +47,7 @@ if ($error == null) {
 }
 
 $layout_content = include_template('layout.php', [
+    'is_auth' => $is_auth,
     'content' => $main_content,
     'cats' => $cats,
     'title' => $title,
