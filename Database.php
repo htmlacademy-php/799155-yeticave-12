@@ -1,4 +1,6 @@
 <?php
+require_once('helpers.php');
+
 class Database {
     private $connection;
     private $error;
@@ -18,7 +20,11 @@ class Database {
       }
     }
 
-    public function isOk() {
+    public function __destruct() {
+      mysqli_close($this->connection);
+    }
+
+    public function isOk() : bool {
       return $this->error == null;
     }
 
@@ -39,13 +45,30 @@ class Database {
       }
     }
 
-    public function prepare($sql) {
+    public function prepare($sql, $data = []) {
       if ($this->connection) {
         $this->error = null;
-        $stmt = mysqli_prepare($this->connection, $sql);
+        $stmt = db_get_prepare_stmt($this->connection, $sql, $data);
         return $stmt;
       } else {
         return false;
       }
     }
+
+    public function getEscapeStr(string $str) : string {
+      if (get_magic_quotes_gpc()) {
+        $str  =  stripslashes($str);
+      } 
+      if ($this->connection) {
+        return mysqli_real_escape_string($this->connection, $str);
+      }
+      return $str;
+    }   
+    
+    public function getLastId() {
+      if ($this->isOk()) {
+        return mysqli_insert_id($this->connection);
+      }
+      return false;
+    }        
 }

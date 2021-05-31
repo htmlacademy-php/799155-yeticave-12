@@ -3,32 +3,34 @@ require_once('helpers.php');
 require_once('Repository.php');
 require_once('functions.php');
 
-$lot_content = null;
-$layout_content = null;
+$lotContent = null;
+$layoutContent = null;
 $error = null;
-$user_name = 'Alex';
-$is_auth = 0;
+$userName = 'Alex';
+$isAuth = 0;
 
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
 if (isset($_GET['id'])) {
-  $id = intval($_GET['id']);
+  $lotId = intval($_GET['id']);
   if ($repo->isOk()) {
     $cats = $repo->getAllCategories();
-    $lot = $repo->getLot($id);
+    $lot = $repo->getLot($lotId);
+    $bet = $repo->getMaxBet($lotId);
     if ($repo->isOk()) {
-      $lot_content = include_template('lot.php', [
+      $lotContent = include_template('lot.php', [
         'lot' => $lot,
-        'cats' => $cats
+        'cats' => $cats,
+        'bet' => $bet
       ]);
 
-      $layout_content = include_template('layout.php', [
-        'is_auth' => $is_auth,
-        'content' => $lot_content,
+      $layoutContent = include_template('layout.php', [
+        'isAuth' => $isAuth,
+        'content' => $lotContent,
         'cats' => $cats,
         'title' => $lot['name'],
-        'user_name' => $user_name
+        'userName' => $userName
       ]);
     } else {
       http_response_code(404);
@@ -38,9 +40,9 @@ if (isset($_GET['id'])) {
   }
 }
 if ($error != null) {
-  $layout_content = include_template('error.php', [
+  $layoutContent = include_template('error.php', [
     'error' => $error
   ]);
 } 
 
-print($layout_content);
+print($layoutContent);
