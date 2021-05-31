@@ -1,5 +1,5 @@
 <nav class="nav">
-  <?php $price = $bet > $lot['price'] ? $bet : $lot['price']; ?>
+  <?php $price = $bet > intVal($lot['price']) ? $bet : intVal($lot['price']); ?>
   <ul class="nav__list container">
     <?php foreach($cats as $cat): ?>
     <li class="nav__item">
@@ -35,7 +35,7 @@
             <span class="lot-item__cost"><?=formatPrice(strip_tags($price))?></span>
           </div>
           <div class="lot-item__min-cost">
-            Мин. ставка <span><?=formatPrice(strip_tags($price + $lot['bet_step']))?></span>
+            Мин. ставка <span><?=formatPrice(strip_tags($price + htmlspecialchars($lot['bet_step'])))?></span>
           </div>
         </div>
         <form class="lot-item__form visually-hidden" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
