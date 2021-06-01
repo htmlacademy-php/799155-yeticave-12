@@ -28,50 +28,40 @@ $lot = [
   'new-img' => getPostVal('new_img', '')
 ];
 
-//сообщения об ошибках при верификации формы
-$errMessages = [
-  'lot-name' => 'Введите наименование лота',
-  'lot-date' => 'Введите дату в формате ГГГГ-ММ-ДД', 
-  'lot-step' => 'Введите шаг ставки', 
-  'lot-rate' => 'Введите начальную цену', 
-  'lot-img' => 'Укажите файл с изображением',
-  'message' => 'Напишите описание лота, не менее 64 знаков, не более 512', 
-  'category' => 'Выберите категорию'
-];
 
 //правила верификации для полей формы
 $lotRules = [
-  'lot-name' => function($lot, $message) {
-    $error = validateFilled('lot-name', $lot, $message);
+  'lot-name' => function($lot) {
+    $error = validateFilled('lot-name', $lot, 'Введите наименование лота');
     return $error;
   },
-  'lot-date' => function($lot, $message) {
-    $error = validateFilled('lot-date', $lot, $message);
+  'lot-date' => function($lot) {
+    $error = validateFilled('lot-date', $lot, 'Введите дату в формате ГГГГ-ММ-ДД');
     if ($error === null) {
-      $error = validateDate('lot-date', $lot, $message);
+      $error = validateDate('lot-date', $lot, 'Формат даты ГГГГ-ММ-ДД');
     }
     return $error;
   },
-  'lot-step' => function($lot, $message) {
-    $error = validateFilled('lot-step', $lot, $message);
+  'lot-step' => function($lot) {
+    $error = validateFilled('lot-step', $lot, 'Введите шаг ставки');
     if ($error === null) {
-      $error = isNumeric('lot-step', $lot, $message);
+      $error = isNumeric('lot-step', $lot);
     }
     return $error;
   },
-  'lot-rate' => function($lot, $message) {
-    $error = validateFilled('lot-rate', $lot, $message);
+  'lot-rate' => function($lot) {
+    $error = validateFilled('lot-rate', $lot, 'Введите начальную цену');
     if ($error === null) {
-      $error = isNumeric('lot-rate', $lot, $message);
+      $error = isNumeric('lot-rate', $lot);
     }
     return $error;
   },
-  'category' => function($lot, $message) {
-    $error = validateFilled('category', $lot, $message);
+  'category' => function($lot) {
+    $error = validateFilled('category', $lot, 'Выберите категорию');
     return $error;
   },
-  'message' => function($lot, $message) {
-    $error = validateFilled('message', $lot, $message);
+  'message' => function($lot) {
+    $error = validateFilled('message', $lot, 'Напишите описание лота, не менее 64 знаков, не более 512');
     if ($error === null) {
       $error = isCorrectLength('message', $lot, 64, 512);
     }
@@ -91,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
   
   //валидация полей формы
-  Form::validateFields($lotRules, $lot, $errMessages);
+  Form::validateFields($lotRules, $lot);
   $errors = Form::getErrors();
   //отдельно валидация файла с изображением и перенос его в папку uploads
   if (empty($lot['lot-img'])) {

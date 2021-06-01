@@ -47,48 +47,44 @@ function getPostVal($key, $default) {
 	return $_POST[$key] ?? $default;
 }
 
-function getFileName($key, $default) {
-    return $_FILES[$key]['name'];
-}
-
-function validateEmail($emailKey) {
-	if (!isset($_POST[$emailKey]) or !filter_var($_POST[$emailKey], FILTER_VALIDATE_EMAIL)) {
+function validateEmail($emailKey, $data) {
+	if (!isset($data[$key]) or !filter_var($data[$key], FILTER_VALIDATE_EMAIL)) {
 			return "Введите корректный email";
 	}
 	return null;
 }
 
-function validateFilled($key, $array, $message) {
-	if (!isset($array[$key]) or empty($array[$key])) {
+function validateFilled($key, $data, $message) {
+	if (!isset($data[$key]) or empty($data[$key])) {
 		return $message;
 	}
 	return null;
 }
 
-function isCorrectLength($key, $array, $min, $max) {
-	$len = strlen($array[$key]);
+function isCorrectLength($key, $data, $min, $max) {
+	$len = strlen($data[$key]);
 	if ($len < $min or $len > $max) {
 			return "Значение должно быть от ". $min ." до " . $max ." символов";
 	}
 	return null;
 }
 
-function validateDate($dateKey, $array, $message)
+function validateDate($dateKey, $data, $message)
 {
-    if (!is_date_valid($array[$dateKey])) {
+    if (!is_date_valid($data[$dateKey])) {
         return $message;    
     }
     $now_time = strtotime('now');
-    $fin_time = strtotime($array[$dateKey]);
+    $fin_time = strtotime($data[$dateKey]);
     if ($fin_time - $now_time < 24 * 3600) {
         return "Дата должна больше текущей хотя бы на один день";
     }
     return null;
 }
 
-function isNumeric($numKey, $array) {
-    if (!is_numeric($array[$numKey]) or intval($array[$numKey]) === 0) {
-        return "Поле должно содержать число";
+function isNumeric($numKey, $data) {
+    if (!is_numeric($data[$numKey]) or intval($data[$numKey]) === 0) {
+        return "Поле должно содержать только числа";
     }
     return null;
 }

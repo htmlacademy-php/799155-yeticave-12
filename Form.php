@@ -54,12 +54,11 @@ class Form {
 		return false;
 	}
 
-	public static function validateFields(array $rules, array $lot, array $messages) {
+	public static function validateFields(array $rules, array $data) {
 		$errors = array();
-		foreach ($lot as $key => $value) {
+		foreach ($data as $key => $value) {
 			if (isset($rules[$key])) {
-					$rule = $rules[$key];
-					$errors[$key] = $rule($lot, $messages[$key]);
+					$errors[$key] = $rules[$key]($data);
 			}
 		}
 		self::$errors = array_filter($errors);
