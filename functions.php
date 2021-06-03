@@ -61,6 +61,13 @@ function validateFilled($key, $data, $message) {
 	return null;
 }
 
+function isCorrectId($key, $data, $message) {
+	if (!isset($data[$key]) or intVal($data[$key]) == 0) {
+		return $message;
+	}
+	return null;
+}
+
 function isCorrectLength($key, $data, $min, $max) {
 	$len = strlen($data[$key]);
 	if ($len < $min or $len > $max) {

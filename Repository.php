@@ -6,7 +6,7 @@ class Repository extends Database {
   public function getAllCategories() {
     $cats = array();
     if ($this->isOk()) {
-      $sql = "SELECT name, code FROM cats";
+      $sql = "SELECT id, name, code FROM cats";
       $result = $this->query($sql);
       if ($this->isOk()) {
           $cats = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -28,16 +28,37 @@ class Repository extends Database {
     return $lots;
   }
 
-  public function addNewLot($lot) {
+  public function addNewLot($lot, $authorId) {
     if ($this->isOk()) {
-      $sql = 'INSERT INTO lots SET dt_add = NOW(), name = $lot["name"],' . 
-      ' descr = $lot["descr"], img_url = $lot["img_url"], dt_expired = $lot["date_expired"],' . 
-      ' price = $lot["price"], bet_step = $lot["bet_step"], cat_id = $lot["cat_id"], author_id = $lot["author_id"]';
-      $this->query($sql);
-    }
-    return isOk();
+      //запишем данные лота в базу
+      $sql = "INSERT INTO lots (dt_add, name, descr, img_url, price, dt_expired, bet_step, cat_id, author_id)" . 
+      " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
+      $data = [$lot['lot-name'], $lot['message'], 'uploads/' . $lot['new-img'], $lot['lot-rate'], $lot['lot-date'],
+          $lot['lot-step'], $lot['category'], $authorId];
+      $stmt = $this->prepare($sql, $data);
+      if ($stmt) {
+        $result = mysqli_stmt_execute($stmt);
+        if (!$result) {
+          $this->setError($this->getBaseError());
+        }
+        return $result;
+      } else {
+        $this->setError($this->getBaseError());
+      }
+    } 
+    return false;
   }
   
+  public function findSimilarLot($key, $data) {
+    $sql = "SELECT id, name FROM lots WHERE name LIKE " . "'" . $data[$key] . "'";
+    $result = $this->query($sql);
+    if ($result) {
+      $lot = mysqli_fetch_assoc($result);
+      return $lot;
+    }
+    return false;
+  }
+
   public function getLot($lotId) {
     $lot = array();
     if ($this->isOk()) {
@@ -49,9 +70,22 @@ class Repository extends Database {
           return $lot;
       } 
     }
-    $this->setError('Lot ' . $id . ' not found');
+    $this->setError('Lot id ' . $id . ' not found');
     return false;
   }
+
+  public function getCat($catId) {
+    if ($this->isOk()) {
+      $sql = "SELECT id, name FROM cats WHERE id = $catId";
+      $result = $this->query($sql);
+      if ($this->isOk()) {
+        $cat = mysqli_fetch_assoc($result);
+        return $cat;
+      } 
+    }
+    $this->setError('Category id ' . $catId . ' not found');
+    return false;
+  }  
 
   public function getCatId($catName) {
     if ($this->isOk()) {

@@ -23,7 +23,7 @@ $lot = [
   'lot-step' => getPostVal('lot-step', 0), 
   'lot-rate' => getPostVal('lot-rate', 0), 
   'message' => getPostVal('message', ''), 
-  'category' => getPostVal('category', ''),
+  'category' => getPostVal('category', '0'),
   'lot-img' => getPostVal('lot_img', ''),
   'new-img' => getPostVal('new_img', '')
 ];
@@ -57,7 +57,7 @@ $lotRules = [
     return $error;
   },
   'category' => function($lot) {
-    $error = validateFilled('category', $lot, 'Выберите категорию');
+    $error = isCorrectId('category', $lot, 'Выберите категорию');
     return $error;
   },
   'message' => function($lot) {
@@ -74,53 +74,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lot[$key] = $value;
   }
 
-  //проверим поле категории, которое может содержать плейсхолдер
-  if ($lot['category'] === 'Выберите категорию') {
-    //заменим его на пустую строку
-    $lot['category'] = "";
-  }
-  
   //валидация полей формы
   Form::validateFields($lotRules, $lot);
   $errors = Form::getErrors();
   //отдельно валидация файла с изображением и перенос его в папку uploads
   if (empty($lot['lot-img'])) {
-    if (Form::validateFile('lot-img', $errMessages['lot-img'])) {
+    if (Form::validateFile('lot-img', 'Укажите файл с изображением')) {
       $lot['lot-img'] = Form::getFileName();
       $lot['new-img'] = Form::getNewFileName();
     } else {
       $errors['lot-img'] = Form::getMessage();
     }
   }
-
   if ($repo->isOk() and  count($errors) == 0) {
     //поищем дубль лота в БД
-    $sql = "SELECT id, name FROM lots WHERE name LIKE " . "'" . $lot['lot-name'] . "'";
-    $result = $repo->query($sql);
-    if ($result) {
-      $row = mysqli_fetch_assoc($result);
-      if (isset($row)) {
-        header("Location:/lot.php?id=" . $row['id']);
-      }
-    }
-
-    $catId = $repo->getCatId($repo->getEscapeStr($lot['category']));
-    //запишем данные лота в базу
-    $sql = "INSERT INTO lots (dt_add, name, descr, img_url, price, dt_expired, bet_step, cat_id, author_id)" . 
-    " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
-    $data = [$lot['lot-name'], $lot['message'], 'uploads/' . $lot['new-img'], $lot['lot-rate'], $lot['lot-date'],
-            $lot['lot-step'], $catId, $authorId];
-    $stmt = $repo->prepare($sql, $data);
-    $result = mysqli_stmt_execute($stmt);
-    //если все ок, переместимся на страницу лота
-    if ($result) {
-      $id = $repo->getLastId();
-      header("Location:/lot.php?id=" . $id);
+    $row = $repo->findSimilarLot('lot-name', $lot);
+    if (isset($row['id'])) {
+      //переместимся на станицу лота
+      header("Location:/lot.php?id=" . $row['id']);
     } else {
-      $error = $repo->getError();
+      //запишем данные лота в базу
+      $result = $repo->addNewLot($lot, $authorId);
+      //если все ок, переместимся на станицу лота
+      if ($result) {
+        $id = $repo->getLastId();
+        header("Location:/lot.php?id=" . $id);
+      } else {
+        $error = $repo->getError();
+      }
     }
   } 
 }
+
 //работаем с ошибками формы
 if ($repo->isOk()) {
   $cats = $repo->getAllCategories();

@@ -19,12 +19,12 @@
 	</div>
 	<div class="form__item <?=isset($errors['category']) ? 'form__item--invalid' : ''?>">
 	  <label for="category">Категория <sup>*</sup></label>
-	  <select id="category" name="category" value="<?=htmlspecialchars($lot['category'])?>">
-		<option>Выберите категорию</option>
+	  <select id="category" name="category" value="<?=$lot['category']?>">
+		<option vaue="0">Выберите категорию</option>
 		<?php $selected = ""; ?>
 		<?php foreach($cats as $cat): ?>
-		  <?php $selected = ($cat['name'] === $lot['category']) ? "selected" : ""; ?>
-		  <option <?=$selected?>><?=htmlspecialchars($cat['name'])?></option>
+		  <?php $selected = ($cat['id'] === $lot['category']) ? "selected" : ""; ?>
+		  <option value=<?=$cat['id']?> <?=$selected?>><?=htmlspecialchars($cat['name'])?></option>
 		<?php endforeach; ?>
 	  </select>
 		<?php if (isset($errors['category'])) : ?>

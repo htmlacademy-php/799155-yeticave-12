@@ -32,6 +32,10 @@ class Database {
       return $this->error;
     }
 
+  	public function getBaseError() {
+      return mysqli_error($this->connection);
+    }
+    
     public function query($sql) {
       if ($this->connection) {
         $this->error = null;
