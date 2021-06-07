@@ -43,4 +43,55 @@ function getTimeLeft(string $time)  {
     return [$hours, $mins, $s_hours, $s_mins];
 }
 
-?>
+function getPostVal($key, $default) {
+	return $_POST[$key] ?? $default;
+}
+
+function validateEmail($emailKey, $data) {
+	if (!isset($data[$key]) or !filter_var($data[$key], FILTER_VALIDATE_EMAIL)) {
+			return "Введите корректный email";
+	}
+	return null;
+}
+
+function validateFilled($key, $data, $message) {
+	if (!isset($data[$key]) or empty($data[$key])) {
+		return $message;
+	}
+	return null;
+}
+
+function isCorrectId($key, $data, $message) {
+	if (!isset($data[$key]) or intVal($data[$key]) == 0) {
+		return $message;
+	}
+	return null;
+}
+
+function isCorrectLength($key, $data, $min, $max) {
+	$len = strlen($data[$key]);
+	if ($len < $min or $len > $max) {
+			return "Значение должно быть от ". $min ." до " . $max ." символов";
+	}
+	return null;
+}
+
+function validateDate($dateKey, $data, $message)
+{
+    if (!is_date_valid($data[$dateKey])) {
+        return $message;    
+    }
+    $now_time = strtotime('now');
+    $fin_time = strtotime($data[$dateKey]);
+    if ($fin_time - $now_time < 24 * 3600) {
+        return "Дата должна больше текущей хотя бы на один день";
+    }
+    return null;
+}
+
+function isNumeric($numKey, $data) {
+    if (!is_numeric($data[$numKey]) or intval($data[$numKey]) === 0) {
+        return "Поле должно содержать только числа";
+    }
+    return null;
+}
