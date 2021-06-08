@@ -48,9 +48,13 @@ function getPostVal($key, $default) {
 }
 
 function validateEmail($emailKey, $data) {
-	if (!isset($data[$key]) or !filter_var($data[$key], FILTER_VALIDATE_EMAIL)) {
+	if (!isset($data[$emailKey]) or !filter_var($data[$emailKey], FILTER_VALIDATE_EMAIL)) {
 			return "Введите корректный email";
 	}
+    $repo = new Repository();
+    if ($repo->getUserId($data[$emailKey])) {
+        return "Пользователь с этим email уже существует";
+    }
 	return null;
 }
 
@@ -94,4 +98,12 @@ function isNumeric($numKey, $data) {
         return "Поле должно содержать только числа";
     }
     return null;
+}
+
+function validateLogin($nameKey, $data) {
+	$repo = new Repository();
+	if ($repo->findUserName($data[$nameKey])) {
+		return "Пользователь с таким именем уже есть. Укажите другое имя";
+	}
+	return null;
 }

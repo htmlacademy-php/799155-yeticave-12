@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $errors = Form::getErrors();
   //отдельно валидация файла с изображением и перенос его в папку uploads
   if (empty($lot['lot-img'])) {
-    if (Form::validateFile('lot-img', 'Укажите файл с изображением')) {
+    if (Form::validateImageFile('lot-img', 'Укажите файл с изображением')) {
       $lot['lot-img'] = Form::getFileName();
       $lot['new-img'] = Form::getNewFileName();
     } else {
