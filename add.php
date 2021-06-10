@@ -92,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($row['id'])) {
       //переместимся на станицу лота
       header("Location:/lot.php?id=" . $row['id']);
+      exit();
     } else {
       //запишем данные лота в базу
       $result = $repo->addNewLot($lot, $authorId);
@@ -99,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if ($result) {
         $id = $repo->getLastId();
         header("Location:/lot.php?id=" . $id);
+        exit();
       } else {
         $error = $repo->getError();
       }

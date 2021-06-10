@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //header("Location:/login.php");
     //пока на главную
     header("Location:/");
+    exit();
   } else {
       $error = $repo->getError();
     }
