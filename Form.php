@@ -22,7 +22,7 @@ class Form {
 		return self::$newFilename;
 	}
 
-	public static function validateFile(string $key, $message, int $maxSize = 200000) {
+	public static function validateImageFile(string $key, $message, int $maxSize = 200000) {
 		if (!empty($_FILES[$key]['tmp_name'])) {
 		  $finfo = finfo_open(FILEINFO_MIME_TYPE);
 		  $fileSize = $_FILES[$key]['size'];

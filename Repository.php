@@ -112,4 +112,42 @@ class Repository extends Database {
     }
     return $bet;
   }
+
+  public function findUserName($name) {
+    if ($this->isOk()) {
+      $sql = "SELECT id, name FROM users WHERE name LIKE " . "'" . $name . "'";
+      $result = $this->query($sql);
+      if ($result) {
+        return mysqli_num_rows($result) > 0 ? true : false;
+      }
+    }
+    return false;
+  }
+  
+  public function getUserId($email) {
+    if ($this->isOk()) {
+      $sql = "SELECT id, email FROM users WHERE email = " . "'" . $email . "'";
+      $result = $this->query($sql);
+      if ($this->isOk()) {
+        $user = mysqli_fetch_assoc($result);
+        return $user['id'];
+      } 
+      $this->setError('email ' . $email . ' not found');
+    }
+    return false;
+  }  
+  
+  public function registerNewUser($user) {
+    if ($this->isOk()) {
+      //запишем данные юзера в базу
+      $passwordHash = password_hash($user['password'], PASSWORD_DEFAULT);		
+      $sql = "INSERT INTO users (dt_reg, name, email, password, contact)" . 
+      " VALUES (NOW(), ?, ?, ?, ?)";
+      $data = [$user['name'], $user['email'], $passwordHash, $user['message']];
+      $stmt = $this->prepare($sql, $data);
+      $result = mysqli_stmt_execute($stmt);
+      return $result;
+    }
+    return false;
+  }
 }

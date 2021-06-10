@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $errors = Form::getErrors();
   //отдельно валидация файла с изображением и перенос его в папку uploads
   if (empty($lot['lot-img'])) {
-    if (Form::validateFile('lot-img', 'Укажите файл с изображением')) {
+    if (Form::validateImageFile('lot-img', 'Укажите файл с изображением')) {
       $lot['lot-img'] = Form::getFileName();
       $lot['new-img'] = Form::getNewFileName();
     } else {
@@ -92,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($row['id'])) {
       //переместимся на станицу лота
       header("Location:/lot.php?id=" . $row['id']);
+      exit();
     } else {
       //запишем данные лота в базу
       $result = $repo->addNewLot($lot, $authorId);
@@ -99,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if ($result) {
         $id = $repo->getLastId();
         header("Location:/lot.php?id=" . $id);
+        exit();
       } else {
         $error = $repo->getError();
       }
