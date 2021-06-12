@@ -89,7 +89,7 @@ if ($repo->isOk()) {
       'content' => $signUpContent,
       'cats' => $cats,
       'title' => $title,
-      'userName' => $userName
+      'user_name' => $userName
     ]);
   } else {
     $error = $repo->getError();

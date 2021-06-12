@@ -11,5 +11,15 @@ if (isset($_SESSION['user_id']) and
   $_SESSION['http_x'] == $_SERVER['HTTP_X_FORWARDED_FOR']) {
   $authorId = $_SESSION['user_id'];
   $userName = $_SESSION['user_name'];
+  if (isset($_SESSION['page'])) {
+	  unset($_SESSION['page']);
+  }
   $isAuth = 1;
+}else {
+  //запомним страницу, на которую юзер заходил до авторизации
+  //чтобы вернуть ее после авторизации
+	if (!strstr($_SERVER['REQUEST_URI'], 'login.php') and 
+		!strstr($_SERVER['REQUEST_URI'], 'sign-up.php')) {
+		$_SESSION['page'] = $_SERVER['REQUEST_URI'];
+	}
 }

@@ -82,7 +82,7 @@ if ($error === null) {
     'content' => $lotContent,
     'cats' => $cats,
     'title' => $lot['name'],
-    'userName' => $userName
+    'user_name' => $userName
   ]);
 } else {
   $layoutContent = include_template('error.php', [

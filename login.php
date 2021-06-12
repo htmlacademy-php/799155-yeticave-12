@@ -53,7 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $_SESSION['user_name'] = $author['name'];
       $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
       $_SESSION['remote_addr'] = $_SERVER['REMOTE_ADDR']; 
-    
+      if (isset($_SESSION['page'])) {
+        //возврат на страницу, на которой юзер был до авторизации
+        header("Location:" . $_SESSION['page']);
+        exit();
+      }
 		  header("Location: /index.php");
       exit();
 	  } else {
@@ -76,7 +80,7 @@ if ($repo->isOk()) {
       'content' => $loginContent,
       'cats' => $cats,
       'title' => $title,
-      'userName' => $userName
+      'user_name' => $userName
     ]);
   } else {
     $error = $repo->getError();
