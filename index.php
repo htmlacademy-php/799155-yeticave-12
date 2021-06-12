@@ -2,10 +2,8 @@
 require_once('helpers.php');
 require_once('functions.php');
 require_once('Repository.php');
+require_once('session.php');
 
-$isAuth = 0; //rand(0, 1);
-$title = 'YetiCave';
-$userName = 'Alex'; // укажите здесь ваше имя
 $cats = array();
 $lots = array();
 $bets = array();
@@ -48,11 +46,11 @@ if ($error == null) {
 }
 
 $layoutContent = include_template('layout.php', [
-    'isAuth' => $isAuth,
+    'is_auth' => $isAuth,
     'content' => $mainContent,
     'cats' => $cats,
     'title' => $title,
-    'userName' => $userName
+    'user_name' => $userName
 ]);
 
 print($layoutContent);

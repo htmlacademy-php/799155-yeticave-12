@@ -3,11 +3,7 @@ require_once('helpers.php');
 require_once('Repository.php');
 require_once('Form.php');
 require_once('functions.php');
-
-$authorId = 1;
-$userName = 'Alex';
-$isAuth = 1;
-$title = 'YetiCave';
+require_once('session.php');
 
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
@@ -69,6 +65,11 @@ $lotRules = [
   }
 ];
 
+if ($isAuth == 0) {
+  header("HTTP/1.0 403 Forbidden");
+  exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   foreach ($_POST as $key => $value) {
     $lot[$key] = $value;
@@ -112,13 +113,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if ($repo->isOk()) {
   $cats = $repo->getAllCategories();
   if ($repo->iSOk()) {
+    $navContent = include_template('nav.php', [
+      'cats' => $cats
+    ]);
     $addContent = include_template('add.php', [
-      'cats' => $cats,
+      'nav' => $navContent,
       'lot' => $lot,
+      'cats' => $cats,
       'errors' => $errors
     ]);
     $layoutContent = include_template('layout.php', [
-      'isAuth' => $isAuth,
+      'nav' => $navContent,
+      'is_auth' => $isAuth,
       'content' => $addContent,
       'cats' => $cats,
       'title' => $title,
