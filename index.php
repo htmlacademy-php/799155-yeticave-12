@@ -7,19 +7,13 @@ require_once('session.php');
 $cats = array();
 $lots = array();
 $bets = array();
-$sql = "";
-$error = null;
+
 $mainContent = null;
+$navContent = null;
 
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
-//заполним список категорий из репозитория
-if ($repo->isOk()) {
-    $cats = $repo->getAllCategories();
-} else {
-    $error = $repo->getError();
-}
 //заполним список лотов из репозитория
 if ($repo->isOk()) {
     $lots = $repo->getAllLots();
@@ -29,11 +23,14 @@ if ($repo->isOk()) {
         $bet['price'] = $repo->getMaxBet($lot['id']);
         $bets[] = $bet;
     }
-} else {
-    $error = $repo->getError();
 }
 
-if ($error == null) {
+//заполним список категорий из репозитория
+if ($repo->isOk()) {
+    $cats = $repo->getAllCategories();
+}
+
+if ($repo->isOk()) {
     $mainContent = include_template('main.php', [
         'cats' => $cats,
         'lots' => $lots,
@@ -41,11 +38,12 @@ if ($error == null) {
     ]);
 } else {
     $mainContent = include_template('error.php', [
-		'error' => $error
+		'error' => $repo->getError()
     ]);    
 }
 
 $layoutContent = include_template('layout.php', [
+    'nav' => $navContent,
     'is_auth' => $isAuth,
     'content' => $mainContent,
     'cats' => $cats,
