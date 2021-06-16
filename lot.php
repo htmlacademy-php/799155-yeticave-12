@@ -1,45 +1,90 @@
 <?php
 require_once('helpers.php');
 require_once('Repository.php');
+require_once('Form.php');
 require_once('functions.php');
+require_once('session.php');
 
 $lotContent = null;
 $layoutContent = null;
 $error = null;
-$userName = 'Alex';
-$isAuth = 0;
+$errors = array();
+$lotId = 0;
+$lot = array();
 
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
-if (isset($_GET['id'])) {
-  $lotId = intval($_GET['id']);
-  if ($repo->isOk()) {
-    $cats = $repo->getAllCategories();
-    $lot = $repo->getLot($lotId);
-    $bet = $repo->getMaxBet($lotId);
-    if ($repo->isOk()) {
-      $lotContent = include_template('lot.php', [
-        'lot' => $lot,
-        'cats' => $cats,
-        'bet' => $bet
-      ]);
+$cats = $repo->getAllCategories();
+$navContent = include_template('nav.php', [
+  'cats' => $cats
+]);
 
-      $layoutContent = include_template('layout.php', [
-        'isAuth' => $isAuth,
-        'content' => $lotContent,
-        'cats' => $cats,
-        'title' => $lot['name'],
-        'userName' => $userName
-      ]);
-    } else {
-      http_response_code(404);
+$bet = [
+  'cost' => getPostVal('cost', '0'),
+  'lot-id' => getPostVal('lot-id', '0')
+];
+
+//правила верификации для полей формы
+$betRules = [
+  'cost' => function($bet) {
+    $error = validateFilled('cost', $bet, 'Укажите величину ставки');
+    if ($error === null) {
+      $error = validateBet('cost', 'lot-id', $bet);
     }
-  } else {
-    $error = $repo->getError();
+    return $error;
+  }
+];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  foreach ($_POST as $key => $value) {
+    $bet[$key] = $value;
+  }
+  $lotId = $bet['lot-id'];
+  $maxBet = $repo->getMaxBet($lotId);
+  $lot = $repo->getLot($lotId);
+
+  //валидация полей формы
+  Form::validateFields($betRules, $bet);
+  $errors = Form::getErrors();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  if (isset($_GET['id'])) {
+    $lotId = intval($_GET['id']);
+    $lot = $repo->getLot($lotId);
+    if ($repo->isOk()) {
+      if ($lot) {
+        $maxBet = $repo->getMaxBet($lotId);
+      } else {
+        http_response_code(404);
+        exit();
+      }
+    } else {
+      $error = $repo->getError();
+    }
   }
 }
-if ($error != null) {
+
+if ($error === null) {
+  $lotContent = include_template('lot.php', [
+    'is_auth' => $isAuth,
+    'lot' => $lot,
+    'nav' => $navContent,
+    'max_bet' => $maxBet,
+    'errors' => $errors,
+    'bet' => $bet
+  ]);
+
+  $layoutContent = include_template('layout.php', [
+    'nav' => $navContent,
+    'is_auth' => $isAuth,
+    'content' => $lotContent,
+    'cats' => $cats,
+    'title' => $lot['name'],
+    'user_name' => $userName
+  ]);
+} else {
   $layoutContent = include_template('error.php', [
     'error' => $error
   ]);

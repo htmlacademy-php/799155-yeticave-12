@@ -13,25 +13,16 @@ $errors = array();
 $layoutContent = null;
 
 $user = [
-	'name' => getPostVal('name', ''),
 	'email' => getPostVal('email', ''),
-	'password' => getPostVal('password', ''),
-	'message' => getPostVal('message', '')
+	'password' => getPostVal('password', '')
 ];
 
 //правила верификации для полей формы
 $userRules = [
-  'name' => function($user) {
-    $error = validateFilled('name', $user, 'Введите имя');
-	if ($error === null) {
-		$error = validateLogin('name', $user);
-	}
-    return $error;
-  },
   'email' => function($user) {
     $error = validateFilled('email', $user, 'Введите email');
     if ($error === null) {
-      $error = validateEmail('email', $user, '');
+      $error = validateEmail('email', $user, true);
     }
     return $error;
   },
@@ -40,13 +31,9 @@ $userRules = [
     if ($error === null) {
       $error = isCorrectLength('password', $user, 6, 16);
     }
-    return $error;
-  },
-  'message' => function($user) {
-    $error = validateFilled('message', $user, 'Напишите, как с вами связаться, не более 255 знаков');
-    if ($error === null) {
-      $error = isCorrectLength('message', $user, 6, 255);
-    }
+	if ($error === null) {
+		$error = validatePassword('password', 'email', $user);
+	}
     return $error;
   }
 ];
@@ -59,15 +46,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   Form::validateFields($userRules, $user);
   $errors = Form::getErrors();
   if ($repo->isOk() and  count($errors) == 0) {
-    //добавим юзера в базу
-    $result = $repo->registerNewUser($user);
-    if ($result) {
-    //переход на страницу авторизации
-    header("Location:/login.php");
-    exit();
-  } else {
-      $error = $repo->getError();
-    }
+	  //поищем юзера с этим email'ом
+	  $author = $repo->getUser($user['email']);
+	  if ($user) {
+      $_SESSION['user_id'] = $author['id'];
+      $_SESSION['user_name'] = $author['name'];
+      $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+      $_SESSION['remote_addr'] = $_SERVER['REMOTE_ADDR']; 
+      if (isset($_SESSION['page'])) {
+        //возврат на страницу, на которой юзер был до авторизации
+        header("Location:" . $_SESSION['page']);
+        exit();
+      }
+		  header("Location: /index.php");
+      exit();
+	  } else {
+		  $errors['email'] = "Польэователь с этим email не найден";
+	  }
   }
 }
 
@@ -75,18 +70,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if ($repo->isOk()) {
   $cats = $repo->getAllCategories();
   if ($repo->iSOk()) {
-    $navContent = include_template('nav.php', [
-      'cats' => $cats
-    ]);
-    $signUpContent = include_template('sign-up.php', [
-      'nav' => $navContent,
+    $loginContent = include_template('login.php', [
+      'cats' => $cats,
       'user' => $user,
       'errors' => $errors
     ]);
     $layoutContent = include_template('layout.php', [
-      'nav' => $navContent,
       'is_auth' => $isAuth,
-      'content' => $signUpContent,
+      'content' => $loginContent,
       'cats' => $cats,
       'title' => $title,
       'user_name' => $userName

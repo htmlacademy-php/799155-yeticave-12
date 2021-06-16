@@ -40,7 +40,7 @@ class Database {
       if ($this->connection) {
         $this->error = null;
         $result = mysqli_query($this->connection, $sql);
-        if ($result == false) {
+        if ($result === false) {
             $this->error = mysqli_error($this->connection);
         }
         return $result;
@@ -49,10 +49,44 @@ class Database {
       }
     }
 
+
     public function prepare($sql, $data = []) {
       if ($this->connection) {
         $this->error = null;
-        $stmt = db_get_prepare_stmt($this->connection, $sql, $data);
+        $stmt = mysqli_prepare($this->connection, $sql);
+        if ($stmt === false) {
+            $this->error = mysqli_error($this->connection);
+            return false;
+        }
+        if ($data) {
+          $types = '';
+          $stmt_data = [];
+  
+          foreach ($data as $value) {
+            $type = 's';
+            if (is_int($value)) {
+                $type = 'i';
+            }
+            else if (is_string($value)) {
+                $type = 's';
+            }
+            else if (is_double($value)) {
+                $type = 'd';
+            }
+            if ($type) {
+                $types .= $type;
+                $stmt_data[] = $value;
+            }
+          }
+          $values = array_merge([$stmt, $types], $stmt_data);
+  
+          $func = 'mysqli_stmt_bind_param';
+          $func(...$values);
+          if (mysqli_errno($this->connection) > 0) {
+              $this->error = mysqli_error($this->connection);
+              return false;
+          }
+        }
         return $stmt;
       } else {
         return false;

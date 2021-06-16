@@ -1,12 +1,4 @@
-<nav class="nav">
-  <ul class="nav__list container">
-<?php foreach($cats as $cat): ?>
-<li class="nav__item">
-  <a href="all-lots.php?id=<?=$cat['id']?>"><?=htmlspecialchars($cat['name'])?></a>
-</li>
-<?php endforeach; ?>
-  </ul>
-</nav>
+<?=$nav?>
 <form class="form container <?=count($errors) > 0 ? 'form--invalid' : ''?>" action="sign-up.php" method="post" autocomplete="off"> <!-- form--invalid -->
   <h2>Регистрация нового аккаунта</h2>
   <div class="form__item <?=isset($errors['email']) ? 'form__item--invalid' : ''?>"> <!-- form__item--invalid -->

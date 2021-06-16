@@ -36,14 +36,9 @@ class Repository extends Database {
       $data = [$lot['lot-name'], $lot['message'], 'uploads/' . $lot['new-img'], $lot['lot-rate'], $lot['lot-date'],
           $lot['lot-step'], $lot['category'], $authorId];
       $stmt = $this->prepare($sql, $data);
-      if ($stmt) {
+      if ($this->isOk()) {
         $result = mysqli_stmt_execute($stmt);
-        if (!$result) {
-          $this->setError($this->getBaseError());
-        }
         return $result;
-      } else {
-        $this->setError($this->getBaseError());
       }
     } 
     return false;
@@ -115,7 +110,7 @@ class Repository extends Database {
 
   public function findUserName($name) {
     if ($this->isOk()) {
-      $sql = "SELECT id, name FROM users WHERE name LIKE " . "'" . $name . "'";
+      $sql = "SELECT name FROM users WHERE name = " . "'" . $name . "'";
       $result = $this->query($sql);
       if ($result) {
         return mysqli_num_rows($result) > 0 ? true : false;
@@ -124,13 +119,13 @@ class Repository extends Database {
     return false;
   }
   
-  public function getUserId($email) {
+  public function getUser($email) {
     if ($this->isOk()) {
-      $sql = "SELECT id, email FROM users WHERE email = " . "'" . $email . "'";
+      $sql = "SELECT id, name, email FROM users WHERE email = " . "'" . $email . "'";
       $result = $this->query($sql);
       if ($this->isOk()) {
         $user = mysqli_fetch_assoc($result);
-        return $user['id'];
+        return $user;
       } 
       $this->setError('email ' . $email . ' not found');
     }
@@ -145,9 +140,24 @@ class Repository extends Database {
       " VALUES (NOW(), ?, ?, ?, ?)";
       $data = [$user['name'], $user['email'], $passwordHash, $user['message']];
       $stmt = $this->prepare($sql, $data);
-      $result = mysqli_stmt_execute($stmt);
-      return $result;
+      if ($this->isOk()) {
+        $result = mysqli_stmt_execute($stmt);
+        return $result;
+      }
     }
     return false;
   }
+
+  public function getUserPwd($userId) {
+    if ($this->isOk()) {
+      $sql = "SELECT password, id FROM users WHERE id = $userId";
+      $result = $this->query($sql);
+      if ($this->isOk()) {
+        $user = mysqli_fetch_assoc($result);
+        return $user['password'];
+      } 
+      $this->setError('Пользователь id= ' . $userId . ' не найден');
+    }
+    return false;
+  }  
 }

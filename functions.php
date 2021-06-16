@@ -47,13 +47,16 @@ function getPostVal($key, $default) {
 	return $_POST[$key] ?? $default;
 }
 
-function validateEmail($emailKey, $data) {
+function validateEmail($emailKey, $data, $login = false) {
 	if (!isset($data[$emailKey]) or !filter_var($data[$emailKey], FILTER_VALIDATE_EMAIL)) {
 			return "Введите корректный email";
 	}
     $repo = new Repository();
-    if ($repo->getUserId($data[$emailKey])) {
+    $userId = ($repo->getUser($data[$emailKey]))['id'];
+    if ($userId and !$login) {
         return "Пользователь с этим email уже существует";
+    } elseif (!$userId and $login) {
+        return "Пользователь с этим email не найден";
     }
 	return null;
 }
@@ -106,4 +109,35 @@ function validateLogin($nameKey, $data) {
 		return "Пользователь с таким именем уже есть. Укажите другое имя";
 	}
 	return null;
+}
+
+function validatePassword($passKey, $emailKey, $data) {
+	$repo = new Repository();
+	$userId = ($repo->getUser($data[$emailKey]))['id'];
+	if ($userId) {
+		$passwordHash = $repo->getUserPwd($userId);
+		if (!password_verify($data[$passKey], $passwordHash)) {
+			return "Введен неверный пароль";
+		}
+	} else {
+		return "Пользователь не найден";
+	}
+	return null;
+}
+
+function validateBet($betKey, $lotKey, $data) {
+    $repo = new Repository();
+    $lotId = $data[$lotKey];
+    $maxBet = $repo->getMaxBet($lotId);
+    $lot = $repo->getLot($lotId);
+    if ($maxBet < $lot['price']) {
+        $maxBet = $lot['price'];
+    }
+    $nextBet = $maxBet + $lot['bet_step'];
+    if ($data[$betKey] < $nextBet) {
+        return "Следующая ставка должна быть не меньше " . $nextBet;
+    } elseif (($data[$betKey] - $maxBet) % $lot['bet_step'] > 0) {
+        return "Шаг ставки должен быть равен " . $lot['bet_step'];
+    }
+    return null;
 }

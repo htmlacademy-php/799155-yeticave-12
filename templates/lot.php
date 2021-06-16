@@ -1,13 +1,5 @@
-<nav class="nav">
-  <?php $price = $bet > intVal($lot['price']) ? $bet : intVal($lot['price']); ?>
-  <ul class="nav__list container">
-    <?php foreach($cats as $cat): ?>
-    <li class="nav__item">
-      <a href="all-lots.html"><?=htmlspecialchars($cat['name'])?></a>
-    </li>
-    <?php endforeach; ?>
-  </ul>
-</nav>
+<?=$nav?>
+<?php $price = $max_bet > intVal($lot['price']) ? $max_bet : intVal($lot['price']); ?>
 <section class="lot-item container">
   <h2><?=htmlspecialchars($lot['name'])?></h2>
   <div class="lot-item__content">
@@ -38,16 +30,18 @@
             Мин. ставка <span><?=formatPrice(strip_tags($price + htmlspecialchars($lot['bet_step'])))?></span>
           </div>
         </div>
-        <form class="lot-item__form visually-hidden" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
-          <p class="lot-item__form-item form__item form__item--invalid">
+        <form class="lot-item__form <?=$is_auth?'':'visually-hidden';?>" action="lot.php" method="post" autocomplete="off">
+          <p class="lot-item__form-item form__item <?=isset($errors['cost']) ? 'form__item--invalid' : ''?>">
             <label for="cost">Ваша ставка</label>
-            <input id="cost" type="text" name="cost" placeholder="12 000">
-            <span class="form__error">Введите наименование лота</span>
+            <input id="cost" type="text" name="cost" placeholder="Ваша ставка" value="<?=htmlspecialchars($bet['cost'])?>">
+            <span class="form__error"><?=$errors['cost']?></span>
           </p>
+          <!-- Запомним id лота для верификации формы -->
+          <input class="visually-hidden" type="text" name="lot-id" value="<?=$lot['id']?>">
           <button type="submit" class="button">Сделать ставку</button>
         </form>
       </div>
-      <div class="history visually-hidden">
+      <div class="history <?=$is_auth?'':'visually-hidden';?>">
         <h3>История ставок (<span>10</span>)</h3>
         <table class="history__list">
           <tr class="history__item">
