@@ -5,14 +5,15 @@ $authorId = 0;
 
 $title = 'YetiCave';
 session_start();
-if (isset($_SESSION['user_id']) and 
-  $_SESSION['user_agent'] == $_SERVER['HTTP_USER_AGENT'] and
-  $_SESSION['remote_addr'] == $_SERVER['REMOTE_ADDR'] and 
-  $_SESSION['http_x'] == $_SERVER['HTTP_X_FORWARDED_FOR']) {
-  $authorId = $_SESSION['user_id'];
-  $userName = $_SESSION['user_name'];
-  if (isset($_SESSION['page'])) {
-	  unset($_SESSION['page']);
+
+//данные для авторизации
+if (isset($_SESSION['user']['id']) and 
+  $_SESSION['serv']['agent'] == $_SERVER['HTTP_USER_AGENT'] and
+  $_SESSION['serv']['addr'] == $_SERVER['REMOTE_ADDR']) {
+    $authorId = $_SESSION['user']['id'];
+    $userName = $_SESSION['user']['name'];
+    if (isset($_SESSION['page'])) {
+      unset($_SESSION['page']);
   }
   $isAuth = 1;
 }else {
@@ -23,3 +24,11 @@ if (isset($_SESSION['user_id']) and
 		$_SESSION['page'] = $_SERVER['REQUEST_URI'];
 	}
 }
+
+//данные для пагинации
+$lotsPerPage = 9;
+$pagesCount = 1;
+$curPage = $_GET['page'] ?? 1;
+$offset = 0;
+$pages = array(1);
+$url = explode('?', $_SERVER['REQUEST_URI'])[0];

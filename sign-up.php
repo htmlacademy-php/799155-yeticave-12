@@ -8,7 +8,6 @@ require_once('session.php');
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
-$error = null;
 $errors = array();
 $layoutContent = null;
 
@@ -62,11 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //добавим юзера в базу
     $result = $repo->registerNewUser($user);
     if ($result) {
-    //переход на страницу авторизации
-    header("Location:/login.php");
-    exit();
-  } else {
-      $error = $repo->getError();
+      //переход на страницу авторизации
+      header("Location:/login.php");
+      exit();
     }
   }
 }
@@ -91,15 +88,13 @@ if ($repo->isOk()) {
       'title' => $title,
       'user_name' => $userName
     ]);
-  } else {
-    $error = $repo->getError();
-  }  
+  } 
 }
 
 //какая-то ошибка при обработке запроса
-if ($error !== null) {
+if (!$repo->isOk()) {
   $layoutContent = include_template('error.php', [
-    'error' => $error
+    'error' => $repo->getError()
   ]);
 } 
 

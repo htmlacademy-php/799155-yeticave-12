@@ -8,7 +8,6 @@ require_once('session.php');
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
-$error = null;
 $errors = array();
 $layoutContent = null;
 
@@ -49,10 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	  //поищем юзера с этим email'ом
 	  $author = $repo->getUser($user['email']);
 	  if ($user) {
-      $_SESSION['user_id'] = $author['id'];
-      $_SESSION['user_name'] = $author['name'];
-      $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-      $_SESSION['remote_addr'] = $_SERVER['REMOTE_ADDR']; 
+      $_SESSION['user'] = [
+        'id' => $author['id'],
+        'name' => $author['name']
+      ];
+      $_SESSION['serv'] = [
+        'agent' => $_SERVER['HTTP_USER_AGENT'],
+        'addr' => $_SERVER['REMOTE_ADDR']
+      ];
       if (isset($_SESSION['page'])) {
         //возврат на страницу, на которой юзер был до авторизации
         header("Location:" . $_SESSION['page']);
@@ -82,15 +85,13 @@ if ($repo->isOk()) {
       'title' => $title,
       'user_name' => $userName
     ]);
-  } else {
-    $error = $repo->getError();
   }  
 }
 
 //какая-то ошибка при обработке запроса
-if ($error !== null) {
+if (!$repo->isOk()) {
   $layoutContent = include_template('error.php', [
-    'error' => $error
+    'error' => $repo->getError()
   ]);
 } 
 

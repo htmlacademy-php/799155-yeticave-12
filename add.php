@@ -8,7 +8,6 @@ require_once('session.php');
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
-$error = null;
 $errors = array();
 $layoutContent = null;
 
@@ -88,24 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
   }
   if ($repo->isOk() and  count($errors) == 0) {
-    //поищем дубль лота в БД
-    $row = $repo->findSimilarLot('lot-name', $lot);
-    if (isset($row['id'])) {
-      //переместимся на станицу лота
-      header("Location:/lot.php?id=" . $row['id']);
+    //запишем данные лота в базу
+    $repo->addNewLot($lot, $authorId);
+    //если все ок, переместимся на станицу лота
+    if ($repo->isOk()) {
+      $id = $repo->getLastId();
+      header("Location:/lot.php?id=" . $id);
       exit();
-    } else {
-      //запишем данные лота в базу
-      $result = $repo->addNewLot($lot, $authorId);
-      //если все ок, переместимся на станицу лота
-      if ($result) {
-        $id = $repo->getLastId();
-        header("Location:/lot.php?id=" . $id);
-        exit();
-      } else {
-        $error = $repo->getError();
-      }
-    }
+    } 
   } 
 }
 
@@ -130,14 +119,13 @@ if ($repo->isOk()) {
       'title' => $title,
       'user_name' => $userName
     ]);
-  } else {
-    $error = $repo->getError();
-  }  
+  }
 }
+
 //какая-то ошибка при обработке запроса
-if ($error !== null) {
+if (!$repo->isOk()) {
   $layoutContent = include_template('error.php', [
-    'error' => $error
+    'error' => $repo->getError()
   ]);
 } 
 

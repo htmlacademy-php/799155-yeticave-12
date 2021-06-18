@@ -9,7 +9,7 @@
  */
 
 function formatPrice(float $price) : string {
-    $formatted_price = number_format(ceil($price), 0, null, " ") . "₽";
+    $formatted_price = number_format(ceil($price), 0, null, " ") . " ₽";
     return $formatted_price;
 }
 
