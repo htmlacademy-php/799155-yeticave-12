@@ -9,7 +9,10 @@ require_once('session.php');
 $repo = new Repository();
 
 $layoutContent = null;
-$navContent = null;
+$cats = $repo->getAllCategories();
+$navContent = include_template('nav.php', [
+  'cats' => $cats
+]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	$catId = $_GET['cat'];
@@ -23,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pages = range(1, $pagesCount);
       //максимальные ставки для каждого лота
     foreach ($lots as $lot) {
-        $bet['id'] = $lot['id'];
-        $bet['price'] = $repo->getMaxBet($lot['id']);
-        $bets[] = $bet;
+      $bet['id'] = $lot['id'];
+      $bet['price'] = $repo->getMaxBet($lot['id']);
+      $bets[] = $bet;
     }
   }
 
@@ -36,10 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
   if ($repo->isOk()) {
     $lotsContent = include_template('all-lots.php', [
-        'cat' => $cat,
-        'cats' => $cats,
-        'lots' => $lots,
-        'bets' => $bets
+      'nav' => $navContent,
+      'cat' => $cat,
+      'cats' => $cats,
+      'lots' => $lots,
+      'bets' => $bets
     ]);
   } else {
     $lotsContent = include_template('error.php', [
