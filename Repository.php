@@ -61,13 +61,15 @@ class Repository extends Database {
     return false;
   }
   
-  public function findSimilarLots($field, $whatToSearch) {
+  public function findSimilarLots($field1, $field2, $whatToSearch) {
     $lots = array();
-    $field = "l." . $field;
+    $field1 = "l." . $field1;
+    $field2 = "l." . $field2;
     $whatToSearch = "'" . $whatToSearch . "'";
       $sql = "SELECT l.id, l.name, descr, price, img_url, dt_add, dt_expired, c.name as cat_name, cat_id, " . 
-    " (SELECT COUNT(b.id) FROM bets b WHERE b.id = l.id) AS bets_count" .
-    " FROM lots l JOIN cats c ON c.id = l.cat_id WHERE MATCH($field) AGAINST ($whatToSearch IN BOOLEAN MODE) " .
+    " (SELECT COUNT(b.id) FROM bets b WHERE b.lot_id = l.id) AS bets_count" .
+    " FROM lots l JOIN cats c ON c.id = l.cat_id WHERE MATCH(" . "$field1" . "," . "$field2" . ")" . 
+    " AGAINST ($whatToSearch IN BOOLEAN MODE) " .
     "AND dt_expired > NOW() ORDER BY dt_add DESC";
     $result = $this->query($sql);
     if ($this->isOk()) {

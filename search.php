@@ -17,9 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	
 	if ($repo->isOk() and !empty($whatToSerach)) {
 		//заполним список лотов c помощью полнотекстового поиска
-		$lots1 = $repo->findSimilarLots('name', $whatToSerach);
-		$lots2 = $repo->findSimilarLots('descr', $whatToSerach);
-		$lots = array_merge($lots1, $lots2);
+		$lots = $repo->findSimilarLots('name', 'descr', $whatToSerach);
 		//начальные значения в session.php
 		$count = count($lots);
 		$pagesCount = ceil($count / $lotsPerPage); 
