@@ -14,9 +14,16 @@ $navContent = null;
 //установим связь с репозиторием базы yeticave
 $repo = new Repository();
 
+if ($repo->isOk()) {
+	$count = $repo->getLotsCount();
+	$pagesCount = ceil($count / $lotsPerPage); 
+	$offset = ($curPage - 1) * $lotsPerPage;
+	$pages = range(1, $pagesCount);
+}
+
 //заполним список лотов из репозитория
 if ($repo->isOk()) {
-    $lots = $repo->getAllLots();
+    $lots = $repo->getLots($lotsPerPage, $offset);
     //максимальные ставки для каждого лота
     foreach ($lots as $lot) {
         $bet['id'] = $lot['id'];
@@ -48,7 +55,11 @@ $layoutContent = include_template('layout.php', [
     'content' => $mainContent,
     'cats' => $cats,
     'title' => $title,
-    'user_name' => $userName
+    'user_name' => $userName,
+    'url' => $url,
+    'pagesCount' => $pagesCount,
+    'curPage' => $curPage,
+    'pages' => $pages
 ]);
 
 print($layoutContent);

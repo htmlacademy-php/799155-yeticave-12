@@ -7,7 +7,6 @@ require_once('session.php');
 
 $lotContent = null;
 $layoutContent = null;
-$error = null;
 $errors = array();
 $lotId = 0;
 $lot = array();
@@ -60,13 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         http_response_code(404);
         exit();
       }
-    } else {
-      $error = $repo->getError();
     }
   }
 }
 
-if ($error === null) {
+if ($repo->isOk()) {
   $lotContent = include_template('lot.php', [
     'is_auth' => $isAuth,
     'lot' => $lot,
@@ -86,7 +83,7 @@ if ($error === null) {
   ]);
 } else {
   $layoutContent = include_template('error.php', [
-    'error' => $error
+    'error' => $repo->getError()
   ]);
 } 
 
