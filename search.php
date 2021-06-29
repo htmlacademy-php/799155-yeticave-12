@@ -5,16 +5,11 @@ require_once('Form.php');
 require_once('functions.php');
 require_once('session.php');
 
-//установим связь с репозиторием базы yeticave
-$repo = new Repository();
-
 $layoutContent = null;
 $navContent = null;
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-	$whatToSerach = trim($_GET['search']);
-	
+	$whatToSerach = trim($repo->getEscapeStr($_GET['search']));
 	if ($repo->isOk() and !empty($whatToSerach)) {
 		//заполним список лотов c помощью полнотекстового поиска
 		$lots = $repo->findSimilarLots('name', 'descr', $whatToSerach);
@@ -26,9 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	
 		//максимальные ставки для каждого лота
 		foreach ($lots as $lot) {
-			$bet['id'] = $lot['id'];
-			$bet['price'] = $repo->getMaxBet($lot['id']);
-			$bets[] = $bet;
+			$bets[$lot['id']]['price'] = $repo->getMaxBet($lot['id'])['price'];
 		}
 	} 
 	//заполним список категорий из репозитория
@@ -54,12 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			'cats' => $cats,
 			'title' => $title,
 			'user_name' => $userName,
+			'user_id' => $authorId,
 			'url' => $url,
 			'pagesCount' => $pagesCount,
 			'curPage' => $curPage,
 			'pages' => $pages
 		]);
-	} else {
+	} 
+	if (!$repo->isOk()) {
 		$layoutContent = include_template('error.php', [
 			'error' => $repo->getError()
 		]);		

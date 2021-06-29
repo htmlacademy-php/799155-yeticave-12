@@ -23,11 +23,11 @@
             <span class="lot__cost"><?=formatPrice(strip_tags($price))?></span>
           </div>
           <?php $time_left = getTimeLeft(strip_tags($lot['dt_expired'])); ?>
-          <?php if ($time_left == false) : ?>
-          <div class="lot__timer timer timer--finishing">
-              <?='--:--';?>
+          <?php if ($time_left === false) : ?>
+          <div class="lot__timer timer timer--end">
+              <?='Торги окончены';?>
           <?php else:?>
-          <div class="lot__timer timer <?php if ($time_left[0] == 0):?>timer--finishing<?php endif;?>">
+          <div class="lot__timer timer <?php if ($time_left[0] < 1):?>timer--finishing<?php endif;?>">
               <?=$time_left[2] .':' . $time_left[3]; ?>
           <?php endif; ?>
           </div>

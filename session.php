@@ -27,8 +27,14 @@ if (isset($_SESSION['user']['id']) and
 
 //данные для пагинации
 $lotsPerPage = 9;
+$betsPerPage = 7;
 $pagesCount = 1;
 $curPage = $_GET['page'] ?? 1;
 $offset = 0;
 $pages = array(1);
 $url = explode('?', $_SERVER['REQUEST_URI'])[0];
+
+//установим связь с репозиторием базы yeticave
+$repo = new Repository();
+//поищем победителей
+$repo->defineWinners();

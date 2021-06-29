@@ -5,22 +5,19 @@ require_once('Form.php');
 require_once('functions.php');
 require_once('session.php');
 
-//установим связь с репозиторием базы yeticave
-$repo = new Repository();
-
 $errors = array();
 $layoutContent = null;
 
 //данные полей формы
 $lot = [
-  'lot-name' => getPostVal('lot-name', ''),
-  'lot-date' => getPostVal('lot-date', ''), 
-  'lot-step' => getPostVal('lot-step', 0), 
-  'lot-rate' => getPostVal('lot-rate', 0), 
-  'message' => getPostVal('message', ''), 
-  'category' => getPostVal('category', '0'),
-  'lot-img' => getPostVal('lot_img', ''),
-  'new-img' => getPostVal('new_img', '')
+  'lot-name' => $repo->getEscapeStr(getPostVal('lot-name', '')),
+  'lot-date' => $repo->getEscapeStr(getPostVal('lot-date', '')), 
+  'lot-step' => $repo->getEscapeStr(getPostVal('lot-step', 0)), 
+  'lot-rate' => $repo->getEscapeStr(getPostVal('lot-rate', 0)), 
+  'message' => $repo->getEscapeStr(getPostVal('message', '')), 
+  'category' => $repo->getEscapeStr(getPostVal('category', '0')),
+  'lot-img' => $repo->getEscapeStr(getPostVal('lot_img', '')),
+  'new-img' => $repo->getEscapeStr(getPostVal('new_img', ''))
 ];
 
 
@@ -64,14 +61,14 @@ $lotRules = [
   }
 ];
 
-if ($isAuth == 0) {
+if ($isAuth === 0) {
   header("HTTP/1.0 403 Forbidden");
   exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   foreach ($_POST as $key => $value) {
-    $lot[$key] = $value;
+    $lot[$key] = $repo->getEscapeStr($value);
   }
 
   //валидация полей формы
@@ -117,11 +114,11 @@ if ($repo->isOk()) {
       'content' => $addContent,
       'cats' => $cats,
       'title' => $title,
-      'user_name' => $userName
+      'user_name' => $userName,
+      'user_id' => $authorId
     ]);
   }
 }
-
 //какая-то ошибка при обработке запроса
 if (!$repo->isOk()) {
   $layoutContent = include_template('error.php', [

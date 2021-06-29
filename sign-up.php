@@ -5,17 +5,14 @@ require_once('Form.php');
 require_once('functions.php');
 require_once('session.php');
 
-//установим связь с репозиторием базы yeticave
-$repo = new Repository();
-
 $errors = array();
 $layoutContent = null;
 
 $user = [
-	'name' => getPostVal('name', ''),
-	'email' => getPostVal('email', ''),
-	'password' => getPostVal('password', ''),
-	'message' => getPostVal('message', '')
+	'name' => $repo->getEscapeStr(getPostVal('name', '')),
+	'email' => $repo->getEscapeStr(getPostVal('email', '')),
+	'password' => $repo->getEscapeStr(getPostVal('password', '')),
+	'message' => $repo->getEscapeStr(getPostVal('message', ''))
 ];
 
 //правила верификации для полей формы
@@ -52,7 +49,7 @@ $userRules = [
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   foreach ($_POST as $key => $value) {
-    $user[$key] = $value;
+    $user[$key] = $repo->getEscapeStr($value);
   }
   //валидация полей формы
   Form::validateFields($userRules, $user);
@@ -89,10 +86,10 @@ if ($repo->isOk()) {
       'user_name' => $userName
     ]);
   } 
-}
+} 
 
-//какая-то ошибка при обработке запроса
 if (!$repo->isOk()) {
+  //какая-то ошибка при обработке запроса
   $layoutContent = include_template('error.php', [
     'error' => $repo->getError()
   ]);
