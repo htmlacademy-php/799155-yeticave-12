@@ -5,15 +5,12 @@ require_once('Form.php');
 require_once('functions.php');
 require_once('session.php');
 
-//установим связь с репозиторием базы yeticave
-$repo = new Repository();
-
 $errors = array();
 $layoutContent = null;
 
 $user = [
-	'email' => getPostVal('email', ''),
-	'password' => getPostVal('password', '')
+	'email' => $repo->getEscapeStr(getPostVal('email', '')),
+	'password' => $repo->getEscapeStr(getPostVal('password', ''))
 ];
 
 //правила верификации для полей формы
@@ -39,7 +36,7 @@ $userRules = [
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   foreach ($_POST as $key => $value) {
-    $user[$key] = $value;
+    $user[$key] = $repo->getEscapeStr($value);
   }
   //валидация полей формы
   Form::validateFields($userRules, $user);
@@ -72,8 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //работаем с ошибками формы
 if ($repo->isOk()) {
   $cats = $repo->getAllCategories();
+  $navContent = include_template('nav.php', [
+    'cats' => $cats
+  ]);
   if ($repo->iSOk()) {
     $loginContent = include_template('login.php', [
+      'nav' => $navContent,
       'cats' => $cats,
       'user' => $user,
       'errors' => $errors
@@ -83,11 +84,11 @@ if ($repo->isOk()) {
       'content' => $loginContent,
       'cats' => $cats,
       'title' => $title,
-      'user_name' => $userName
+      'user_name' => $userName,
+      'nav' => $navContent,
     ]);
   }  
 }
-
 //какая-то ошибка при обработке запроса
 if (!$repo->isOk()) {
   $layoutContent = include_template('error.php', [

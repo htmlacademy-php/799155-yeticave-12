@@ -47,3 +47,4 @@ CREATE TABLE users (
 CREATE INDEX email_ind ON users(email);
 CREATE FULLTEXT INDEX name ON lots(name);
 CREATE FULLTEXT INDEX descr ON lots(descr);
+CREATE FULLTEXT INDEX name_descr ON lots(name,descr);

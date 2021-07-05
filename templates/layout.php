@@ -14,7 +14,6 @@
   font-weight: 700;
   color: #45abde;
 }
-
 .nav__item a::before {
   content: "";
   display: none;
@@ -23,6 +22,9 @@
   width: calc(100% - 70px);
   height: 3px;
   background-color: #e2e5e6;
+}
+.main-footer .nav__item a {
+  padding: 12px 50px 12px 20px;
 }
 </style>
 <body>
@@ -43,7 +45,7 @@
             <?php if($is_auth == 1): ?>
                 <div class="user-menu__logged">
                     <p><?=$user_name;?></p>
-                    <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
+                    <a class="user-menu__bets" href="my-bets.php">Мои ставки</a>
                     <a class="user-menu__logout" href="logout.php">Выход</a>
                 </div>
             <?php else: ?>
