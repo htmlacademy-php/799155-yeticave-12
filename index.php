@@ -1,8 +1,8 @@
 <?php
-require_once('helpers.php');
-require_once('functions.php');
-require_once('Repository.php');
-require_once('session.php');
+require_once 'helpers.php';
+require_once 'functions.php';
+require_once 'session.php';
+require_once 'getwinner.php';
 
 $cats = array();
 $lots = array();
@@ -13,10 +13,10 @@ $navContent = null;
 $bets = array();
 
 if ($repo->isOk()) {
-	$count = $repo->getLotsCount();
-	$pagesCount = ceil($count / $lotsPerPage); 
-	$offset = ($curPage - 1) * $lotsPerPage;
-	$pages = range(1, $pagesCount);
+    $count = $repo->getLotsCount();
+    $pagesCount = ceil($count / $lotsPerPage);
+    $offset = ($curPage - 1) * $lotsPerPage;
+    $pages = range(1, $pagesCount);
 }
 
 //заполним список лотов из репозитория
@@ -34,12 +34,12 @@ if ($repo->isOk()) {
 }
 
 if ($repo->isOk()) {
-    $mainContent = include_template('main.php', [
+    $mainContent = includeTemplate('main.php', [
         'cats' => $cats,
         'lots' => $lots,
         'bets' => $bets
     ]);
-    $layoutContent = include_template('layout.php', [
+    $layoutContent = includeTemplate('layout.php', [
         'nav' => $navContent,
         'is_auth' => $isAuth,
         'content' => $mainContent,
@@ -55,9 +55,9 @@ if ($repo->isOk()) {
 }
  
 if (!$repo->isOk()) {
-    $layoutContent = include_template('error.php', [
-		'error' => $repo->getError()
-    ]);    
+    $layoutContent = includeTemplate('error.php', [
+        'error' => $repo->getError()
+    ]);
 }
 
 
