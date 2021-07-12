@@ -3,17 +3,18 @@
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
  * Примеры использования:
- * is_date_valid('2019-01-01'); // true
- * is_date_valid('2016-02-29'); // true
- * is_date_valid('2019-04-31'); // false
- * is_date_valid('10.10.2010'); // false
- * is_date_valid('10/10/2010'); // false
+ * isDateValid('2019-01-01'); // true
+ * isDateValid('2016-02-29'); // true
+ * isDateValid('2019-04-31'); // false
+ * isDateValid('10.10.2010'); // false
+ * isDateValid('10/10/2010'); // false
  *
  * @param string $date Дата в виде строки
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date, string $format_to_check = 'Y-m-d') : bool {
+function isDateValid(string $date, string $format_to_check = 'Y-m-d') : bool
+{
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
@@ -28,7 +29,8 @@ function is_date_valid(string $date, string $format_to_check = 'Y-m-d') : bool {
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function getPrepareStmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -45,14 +47,11 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
-
             if ($type) {
                 $types .= $type;
                 $stmt_data[] = $value;
@@ -80,7 +79,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  * Пример использования:
  * $remaining_minutes = 5;
  * echo "Я поставил таймер на {$remaining_minutes} " .
- *     get_noun_plural_form(
+ *     getNounPluralForm(
  *         $remaining_minutes,
  *         'минута',
  *         'минуты',
@@ -95,25 +94,20 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+function getNounPluralForm(int $number, string $one, string $two, string $many) : string
 {
     $number = (int) $number;
     $mod10 = $number % 10;
     $mod100 = $number % 100;
-
     switch (true) {
         case ($mod100 >= 11 && $mod100 <= 20):
             return $many;
-
         case ($mod10 > 5):
             return $many;
-
         case ($mod10 === 1):
             return $one;
-
         case ($mod10 >= 2 && $mod10 <= 4):
             return $two;
-
         default:
             return $many;
     }
@@ -125,7 +119,8 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function includeTemplate($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -141,5 +136,3 @@ function include_template($name, array $data = []) {
 
     return $result;
 }
-
-

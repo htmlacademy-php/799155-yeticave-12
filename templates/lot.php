@@ -1,11 +1,14 @@
 <?=$nav?>
-<?php $price = $max_bet['price'] > intVal($lot['price']) ? $max_bet['price'] : intVal($lot['price']); ?>
+<?php $price = $max_bet['price'] > intVal($lot['price']) ? $max_bet['price'] : intVal($lot['price']);
+      $hide_form = ($is_auth == 1 and $time_left !== false and  $lot['author_id'] != $user_id and
+      $user_id !== $max_bet['author']) ? false : true;?>
 <section class="lot-item container">
   <h2><?=htmlspecialchars($lot['name'])?></h2>
   <div class="lot-item__content">
     <div class="lot-item__left">
       <div class="lot-item__image">
-        <img src="<?=htmlspecialchars($lot['img_url'])?>" width="730" height="548" alt="<?=htmlspecialchars($lot['name'])?>">
+        <img src="<?=htmlspecialchars($lot['img_url'])?>" width="730" height="548"
+        alt="<?=htmlspecialchars($lot['name'])?>">
       </div>
       <p class="lot-item__category">Категория: <span><?=htmlspecialchars($lot['cat_name'])?></span></p>
       <p class="lot-item__description"><?=strip_tags($lot['descr'])?></p>
@@ -16,8 +19,8 @@
         <?php if ($time_left === false) : ?>
         <div class="lot__timer timer timer--end">
             <?='Торги окончены';?>
-        <?php else:?>
-        <div class="lot__timer timer <?php if ($time_left[0] < 1):?>timer--finishing<?php endif;?>">
+        <?php else :?>
+        <div class="lot__timer timer <?=($time_left[0] < 1) ? 'timer--finishing' : ''?>">
             <?=$time_left[2] .':' . $time_left[3]; ?>
         <?php endif; ?>
         </div>
@@ -32,17 +35,12 @@
             </span>
           </div>
         </div>
-        <?php
-          $hide = true;
-          if ($is_auth == 1 and $time_left !== false and  $lot['author_id'] != $user_id and
-            $user_id !== $max_bet['author']) {
-              $hide = false;
-          }
-        ?>
-        <form class="lot-item__form <?=$hide?'visually-hidden':'';?>" action="lot.php" method="post" autocomplete="off">
+        <form class="lot-item__form <?=$hide_form ? 'visually-hidden' : '';?>" action="lot.php"
+        method="post" autocomplete="off">
           <p class="lot-item__form-item form__item <?=isset($errors['cost']) ? 'form__item--invalid' : ''?>">
             <label for="cost">Ваша ставка</label>
-            <input id="cost" type="text" name="cost" placeholder="Ваша ставка" value="<?=htmlspecialchars($bet['cost'])?>">
+            <input id="cost" type="text" name="cost" placeholder="Ваша ставка"
+            value="<?=htmlspecialchars($bet['cost'])?>">
             <span class="form__error"><?=$errors['cost']?></span>
           </p>
           <!-- Запомним id лота для верификации формы -->
@@ -53,7 +51,7 @@
       <div class="history <?=$is_auth?'':'visually-hidden';?>">
         <h3>История ставок (<span><?=count($bet_history)?></span>)</h3>
         <table class="history__list">
-        <?php foreach($bet_history as $item): ?>
+        <?php foreach ($bet_history as $item) :?>
           <tr class="history__item">
             <td class="history__name"><?=$item['name']?></td>
             <td class="history__price"><?=formatPrice($item['price']);?></td>
