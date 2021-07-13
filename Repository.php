@@ -263,21 +263,6 @@ class Repository extends Database
     }
 
     /**
-     * Найти в БД пользователя с заданным именем
-     */
-    public function findUserName($name)
-    {
-        if ($this->isOk()) {
-            $sql = "SELECT name FROM users WHERE name = " . "'" . $name . "'";
-            $result = $this->query($sql);
-            if ($result) {
-                return mysqli_num_rows($result) > 0 ? true : false;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Получить данные пользователя по его электронной почте
      */
     public function getUser($email)

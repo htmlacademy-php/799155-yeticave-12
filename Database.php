@@ -120,19 +120,4 @@ class Database
         }
         return false;
     }
-
-    public function beginTransaction()
-    {
-        mysqli_begin_transaction($this->connection);
-    }
-
-    public function commitTransaction()
-    {
-        mysqli_commit($this->connection);
-    }
-
-    public function rollbackTransaction()
-    {
-        mysqli_rollback($this->connection);
-    }
 }

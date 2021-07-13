@@ -223,24 +223,6 @@ function isNumeric($numKey, $data)
 }
 
 /**
- * Производит валидацию элемента массива, содержащего имя пользователя, по ключу
- *
- * @param string $nameKey значение ключа элемента массива
- * @param array $data массив с данными
- *
- * @return string, если имя не отвечает требованиям,
- * null, если валидация прошла успешно
-*/
-function validateLogin($nameKey, $data)
-{
-    $repo = new Yeticave\Repository();
-    if ($repo->findUserName($data[$nameKey])) {
-        return "Пользователь с таким именем уже есть. Укажите другое имя";
-    }
-    return null;
-}
-
-/**
  * Производит валидацию элемента массива, содержащего пароль, по ключу
  *
  * @param string$passKey значение ключа элемента массива с паролем
