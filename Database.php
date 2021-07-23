@@ -104,9 +104,6 @@ class Database
 
     public function getEscapeStr(string $str) : string
     {
-        if (get_magic_quotes_gpc()) {
-            $str  =  stripslashes($str);
-        }
         if ($this->connection) {
             return mysqli_real_escape_string($this->connection, $str);
         }
