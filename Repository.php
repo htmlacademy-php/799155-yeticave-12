@@ -11,6 +11,7 @@ class Repository extends Database
     /**
      * Получить перечень категорий аукциона
      * @param ничего
+     * 
      * @return array массив категорий товаров
      */
     public function getAllCategories()
@@ -29,6 +30,7 @@ class Repository extends Database
     /**
      * Получить все активные лоты аукциона
      * @param ничего
+     * 
      * @return array массив лотов аукциона с действущей датой, 
      * отсортированных в порядке уменьшения даты объявления лота
      */
@@ -52,6 +54,7 @@ class Repository extends Database
      * @param int $limit максимальное количество лотов в выборке
      * @param int $offset смещение выборки от начала массива лотов
      * @param int $catId желемая категория лотов выборки
+     * 
      * @return array массив лотов аукциона с действущей датой
      * в соответствии с условиями выборки, 
      * отсортированных в порядке уменьшения даты объявления лота
@@ -79,6 +82,7 @@ class Repository extends Database
      * Добавить в БД новый лот
      * @param array $lot массив с описанием полей лота
      * @param int $authorId id пользователя, заявившего лот
+     * 
      * @return true, если запрос добавления выполнен, false в противном случае
      */
     public function addNewLot($lot, $authorId)
@@ -103,6 +107,7 @@ class Repository extends Database
      * @param string $field1 имя первого поля полнотекстового поиска
      * @param string $field2 имя второго поля полнотекстового поиска
      * @param string $whatToSearch запрос поиска
+     * 
      * @return array массив лотов аукциона с действущей датой в соответствии с
      * поисковым запросом, отсортированных в порядке уменьшения даты объявления лота
      */
@@ -127,6 +132,7 @@ class Repository extends Database
     /**
      * Получить количество активных лотов
      * @param ничего
+     * 
      * @return int количество лотов с действующей датой
      */
     public function getLotsCount()
@@ -146,6 +152,7 @@ class Repository extends Database
      * @param int $lotId id лота
      * @param boolean $expired false, если требуется активный лот
      * true, если нужен лот с любой датой окончания торгов
+     * 
      * @return array данные лота
      * false, если лот с таким id и датой не найден
      */
@@ -172,6 +179,7 @@ class Repository extends Database
     /**
      * Получить название категории по ее id
      * @param int $catId id категории
+     * 
      * @return array данные найденной категории
      * false, если категории с таким именем не найдено
      */
@@ -192,6 +200,7 @@ class Repository extends Database
     /**
      * Получить id категории по ее названию
      * @param string $catName имя категории
+     * 
      * @return int id найденной категории
      * false, если категории с таким именем не найдено
      */
@@ -212,6 +221,7 @@ class Repository extends Database
     /**
      * Получить величину максимальной ставки заданного лота
      * @param int $lotId id лота
+     * 
      * @return array данные максимальной ставки для лота,
      * если ставок еще нет, возвращается ставка с нулевым значением цены
      */
@@ -236,6 +246,7 @@ class Repository extends Database
      * @param array $bet параметры новой ставки для лота
      * @param int $lotId id лота
      * @param int $userId id пользователя, сделавшего ставку
+     * 
      * @return true если ставка добавлена успешно, false в противном случае
      */
     public function addNewBet($bet, $lotId, $userId)
@@ -257,6 +268,7 @@ class Repository extends Database
     /**
      * Получить перечень ставок для заданного лота
      * @param int $lotId id лота
+     * 
      * @return array массив с данными ставок лота
      */
     public function getBetHistory($lotId)
@@ -274,6 +286,7 @@ class Repository extends Database
     /**
      * Получить перечень ставок заданного пользователя
      * @param int $userId id пользователя
+     * 
      * @return array массив с данными ставок пользователя
  */
     public function getUserBets($userId)
@@ -310,6 +323,7 @@ class Repository extends Database
     /**
      * Получить данные пользователя по его электронной почте
      * @param string $email адрес электронной почты пользователя
+     * 
      * @return array данные пользователя, если он найден
      * false в противном случае
      */
@@ -330,6 +344,7 @@ class Repository extends Database
     /**
      * Получить данные пользователя по id
      * @param int $userId id пользователя
+     * 
      * @return array данные пользователя, если он найден
      * false в противном случае
      */
@@ -350,6 +365,7 @@ class Repository extends Database
     /**
      * Зарегистрировать нового пользователя
      * @param array $user данные пользователя
+     * 
      * @return true если пользователь зарегистрирован,
      * false в противном случае
      */
@@ -373,6 +389,7 @@ class Repository extends Database
     /**
      * Получить кэшированный пароль пользоватеоя по его id
      * @param int id пользователя
+     * 
      * @return string кэшированный пароль, если пользователь найден,
      * false в противном случае
      */
@@ -393,6 +410,7 @@ class Repository extends Database
     /**
      * Определить пользователей-победителей аукциона
      * @param ничего
+     * 
      * @return array массив победителей [id-победителя, id-лота] 
      */
     public function defineWinners()
