@@ -45,6 +45,7 @@ if ($repo->isOk()) {
         'content' => $mainContent,
         'cats' => $cats,
         'title' => $title,
+        'search' => '',
         'user_name' => $userName,
         'user_id' => $authorId,
         'url' => $url,
@@ -59,6 +60,5 @@ if (!$repo->isOk()) {
         'error' => $repo->getError()
     ]);
 }
-
 
 print($layoutContent);

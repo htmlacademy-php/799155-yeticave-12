@@ -24,6 +24,9 @@ $lot = [
 $lotRules = [
     'lot-name' => function ($lot) {
         $error = validateFilled('lot-name', $lot, 'Введите наименование лота');
+        if ($error === null) {
+            $error = isCorrectLength('lot-name', $lot, 1, 128);
+        }
         return $error;
     },
     'lot-date' => function ($lot) {
@@ -59,11 +62,8 @@ $lotRules = [
         $error = validateFilled(
             'message',
             $lot,
-            'Напишите описание лота, не менее 64 знаков, не более 512'
+            'Напишите описание лота'
         );
-        if ($error === null) {
-            $error = isCorrectLength('message', $lot, 64, 512);
-        }
         return $error;
     }
 ];
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['lot-img'] = Yeticave\Form::getMessage();
         }
     }
-    if ($repo->isOk() and  count($errors) == 0) {
+    if ($repo->isOk() and  count($errors) === 0) {
         //запишем данные лота в базу
         $repo->addNewLot($lot, $authorId);
         //если все ок, переместимся на станицу лота
@@ -118,11 +118,16 @@ if ($repo->isOk()) {
         $layoutContent = includeTemplate('layout.php', [
             'nav' => $navContent,
             'is_auth' => $isAuth,
+            'search' => '',
             'content' => $addContent,
             'cats' => $cats,
             'title' => $title,
             'user_name' => $userName,
-            'user_id' => $authorId
+            'user_id' => $authorId,
+            'url' => $url,
+            'pagesCount' => $pagesCount,
+            'curPage' => $curPage,
+            'pages' => $pages
         ]);
     }
 }

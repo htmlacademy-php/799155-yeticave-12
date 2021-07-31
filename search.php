@@ -10,6 +10,7 @@ $lots = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $whatToSerach = trim($repo->getEscapeStr($_GET['search']));
+    $bets = array();
     if ($repo->isOk() and !empty($whatToSerach)) {
         //заполним список лотов c помощью полнотекстового поиска
         $lots = $repo->findSimilarLots('name', 'descr', $whatToSerach);

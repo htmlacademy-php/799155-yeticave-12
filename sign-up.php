@@ -18,39 +18,42 @@ $user = [
 $userRules = [
     'name' => function ($user) {
         $error = validateFilled('name', $user, 'Введите имя');
+        if ($error === null) {
+            $error = isCorrectLength('name', $user, 1, 64);
+        }
         return $error;
     },
     'email' => function ($user) {
         $error = validateFilled('email', $user, 'Введите email');
+        if ($error === null) {
+            $error = isCorrectLength('email', $user, 1, 64);
+        }
         if ($error === null) {
             $error = validateEmail('email', $user, '');
         }
         return $error;
     },
     'password' => function ($user) {
-        $error = validateFilled('password', $user, 'Введите пароль, не менее 6 символов');
+        $error = validateFilled('password', $user, 'Введите пароль');
         if ($error === null) {
-            $error = isCorrectLength('password', $user, 6, 16);
+            $error = isCorrectLength('password', $user, 1, 64);
         }
         return $error;
     },
     'message' => function ($user) {
-        $error = validateFilled('message', $user, 'Напишите, как с вами связаться, не более 255 знаков');
-        if ($error === null) {
-            $error = isCorrectLength('message', $user, 6, 255);
-        }
+        $error = validateFilled('message', $user, 'Напишите, как с вами связаться');
         return $error;
     }
 ];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($_POST as $key => $value) {
         $user[$key] = $repo->getEscapeStr($value);
     }
     //валидация полей формы
     Yeticave\Form::validateFields($userRules, $user);
     $errors = Yeticave\Form::getErrors();
-    if ($repo->isOk() and  count($errors) == 0) {
+    if ($repo->isOk() and  count($errors) === 0) {
         //добавим юзера в базу
         $result = $repo->registerNewUser($user);
         if ($result) {
@@ -79,7 +82,12 @@ if ($repo->isOk()) {
             'content' => $signUpContent,
             'cats' => $cats,
             'title' => $title,
-            'user_name' => $userName
+            'search' => '',
+            'user_name' => $userName,
+            'url' => $url,
+            'pagesCount' => $pagesCount,
+            'curPage' => $curPage,
+            'pages' => $pages
         ]);
     }
 }

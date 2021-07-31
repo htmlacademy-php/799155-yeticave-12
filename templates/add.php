@@ -13,7 +13,7 @@ action="add.php" method="post" enctype="multipart/form-data">
     </div>
     <div class="form__item <?=isset($errors['category']) ? 'form__item--invalid' : ''?>">
       <label for="category">Категория <sup>*</sup></label>
-      <select id="category" name="category" value="<?=$lot['category']?>">
+      <select id="category" name="category" value="<?=htmlspecialchars($lot['category'])?>">
         <option vaue="0">Выберите категорию</option>
         <?php $selected = ""; ?>
         <?php foreach ($cats as $cat) : ?>

@@ -37,12 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lotId = $bet['lot-id'];
     $lot = $repo->getLot($lotId);
 
-    //валидация полей формы
-    Yeticave\Form::validateFields($betRules, $bet);
-    $errors = Yeticave\Form::getErrors();
-    if ($repo->isOk() and  count($errors) === 0) {
-        //запишем данные ставки в базу
-        $repo->addNewBet($bet, $lotId, $authorId);
+    if ($repo->isOk()) {
+        //валидация полей формы
+        Yeticave\Form::validateFields($betRules, $bet);
+        $errors = Yeticave\Form::getErrors();
+        if ($repo->isOk() and  count($errors) === 0) {
+            //запишем данные ставки в базу
+            $repo->addNewBet($bet, $lotId, $authorId);
+        }
     }
 }
 
@@ -50,11 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id'])) {
         $lotId = intVal($repo->getEscapeStr($_GET['id']));
         $lot = $repo->getLot($lotId);
-        if ($repo->isOk()) {
-            if ($lot === false) {
-                http_response_code(404);
-                exit();
-            }
+        if ($lot === false) {
+            http_response_code(404);
+            exit();
         }
     }
 }
@@ -79,11 +79,16 @@ if ($repo->isOk()) {
             'nav' => $navContent,
             'is_auth' => $isAuth,
             'content' => $lotContent,
+            'search' => '',
             'cats' => $cats,
             'title' => $lot['name'],
             'user_name' => $userName,
-            'user_id' => $authorId
-        ]);
+            'user_id' => $authorId,
+            'url' => $url,
+            'pagesCount' => $pagesCount,
+            'curPage' => $curPage,
+            'pages' => $pages
+            ]);
     }
 }
 if (!$repo->isOk()) {

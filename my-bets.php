@@ -16,9 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($authorId and $isAuth) {
         $bets = $repo->getUserBets($authorId);
         $count = count($bets);
-        $pagesCount = ceil($count / $betsPerPage);
-        $offset = ($curPage - 1) * $betsPerPage;
-        $pages = range(1, $pagesCount);
+        if ($count > 0) {
+            $pagesCount = ceil($count / $betsPerPage);
+            $offset = ($curPage - 1) * $betsPerPage;
+            $pages = range(1, $pagesCount);
+            $bets = array_slice($bets, $offset, $betsPerPage);
+        }
     }
 }
 
@@ -36,6 +39,7 @@ if ($repo->isOk()) {
         'title' => "Мои ставки",
         'user_name' => $userName,
         'user_id' => $authorId,
+        'search' => '',
         'url' => $url,
         'pagesCount' => $pagesCount,
         'curPage' => $curPage,

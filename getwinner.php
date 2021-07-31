@@ -21,19 +21,21 @@ function sendCongratulation($content, $context)
  * Ищем победителей и отправляем сообщение
  */
 $winners = $repo->defineWinners();
-foreach ($winners as $winner) {
-    $user = $repo->getUserById($winner['id']);
-    $lot = $repo->getLot($winner['lotId'], true);
-    $content['smtp'] = 'smtp.inbox.ru';
-    $content['subject'] = 'Ваша ставка победила';
-    $content['sender'] = 'yeticave@inbox.ru';
-    $content['password'] = 'htmlacademy';
-    $content['recipient'] = $user['email'];
-    $content['name'] = $user['name'];
-    $content['type'] = 'text/html';
-    $context = includeTemplate('email.php', [
-        'user' => $user,
-        'lot' => $lot
-    ]);
-    sendCongratulation($content, $context);
+if ($winners !== false and count($winners) > 0) {
+    foreach ($winners as $winner) {
+        $user = $repo->getUserById($winner['id']);
+        $lot = $repo->getLot($winner['lotId'], true);
+        $content['smtp'] = 'smtp.inbox.ru';
+        $content['subject'] = 'Ваша ставка победила';
+        $content['sender'] = 'yeticave@inbox.ru';
+        $content['password'] = 'htmlacademy';
+        $content['recipient'] = $user['email'];
+        $content['name'] = $user['name'];
+        $content['type'] = 'text/html';
+        $context = includeTemplate('email.php', [
+            'user' => $user,
+            'lot' => $lot
+        ]);
+        sendCongratulation($content, $context);
+    }
 }

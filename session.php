@@ -10,8 +10,8 @@ session_start();
 
 //данные для авторизации
 if (isset($_SESSION['user']['id']) and
-    $_SESSION['serv']['agent'] == $_SERVER['HTTP_USER_AGENT'] and
-    $_SESSION['serv']['addr'] == $_SERVER['REMOTE_ADDR']) {
+    $_SESSION['serv']['agent'] === $_SERVER['HTTP_USER_AGENT'] and
+    $_SESSION['serv']['addr'] === $_SERVER['REMOTE_ADDR']) {
     $authorId = $_SESSION['user']['id'];
     $userName = $_SESSION['user']['name'];
     if (isset($_SESSION['page'])) {
