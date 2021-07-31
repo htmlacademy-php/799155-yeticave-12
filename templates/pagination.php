@@ -10,7 +10,7 @@
         <a <?=($cur_page > 1) ? "href=$url?page=$prev_page" : ""?>>Назад</a>
     </li>
     <?php foreach ($pages as $page) : ?>
-    <li class="pagination-item <?=($page == $cur_page) ? 'pagination-item-active' : ''?>">
+    <li class="pagination-item <?=($page === $cur_page) ? 'pagination-item-active' : ''?>">
         <a <?=($page != $cur_page) ? "href=$url?page=$page":""?>><?=$page?></a>
     </li>   
     <?php endforeach; ?>

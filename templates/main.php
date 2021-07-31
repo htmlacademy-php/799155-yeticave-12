@@ -32,7 +32,7 @@
                 </h3>
                 <div class="lot__state">
                     <div class="lot__rate">
-                    <?php if ($lot['bets_count'] == 0) :?>
+                    <?php if ($lot['bets_count'] === 0) :?>
                     <span class="lot__amount">Стартовая цена</span>
                     <?php else :?>
                     <span class="lot__amount">
@@ -43,7 +43,7 @@
                     <span class="lot__cost"><?=formatPrice(strip_tags($price))?></span>
                     </div>
                     <?php $time_left = getTimeLeft(strip_tags($lot['dt_expired'])); ?>
-                    <?php if ($time_left == false) : ?>
+                    <?php if ($time_left === false) : ?>
                     <div class="lot__timer timer timer--end">
                         <?='Торги окончены';?>
                     <?php else :?>

@@ -1,6 +1,8 @@
 <?=$nav?>
-<?php $price = $max_bet['price'] > intVal($lot['price']) ? $max_bet['price'] : intVal($lot['price']);
-      $hide_form = ($is_auth == 1 and $time_left !== false and  $lot['author_id'] != $user_id and
+<?php $time_left = getTimeLeft(strip_tags($lot['dt_expired']));
+      $price = $max_bet['price'] > intVal($lot['price']) ? $max_bet['price'] : intVal($lot['price']);
+      $bet_min = $price + intVal($lot['bet_step']);
+      $hide_form = ($is_auth === 1 and $time_left !== false and  $lot['author_id'] !== $user_id and
       $user_id !== $max_bet['author']) ? false : true;?>
 <section class="lot-item container">
   <h2><?=htmlspecialchars($lot['name'])?></h2>
@@ -11,11 +13,10 @@
         alt="<?=htmlspecialchars($lot['name'])?>">
       </div>
       <p class="lot-item__category">Категория: <span><?=htmlspecialchars($lot['cat_name'])?></span></p>
-      <p class="lot-item__description"><?=strip_tags($lot['descr'])?></p>
+      <p class="lot-item__description"><?=htmlspecialchars($lot['descr'])?></p>
     </div>
     <div class="lot-item__right">
       <div class="lot-item__state">
-        <?php $time_left = getTimeLeft(strip_tags($lot['dt_expired'])); ?>
         <?php if ($time_left === false) : ?>
         <div class="lot__timer timer timer--end">
             <?='Торги окончены';?>
@@ -31,7 +32,7 @@
           </div>
           <div class="lot-item__min-cost">
             Мин. ставка <span>
-            <?=formatPrice(strip_tags($price + ($max_bet['price'] > 0 ? htmlspecialchars($lot['bet_step']) : 0)))?>
+            <?=formatPrice($bet_min)?>
             </span>
           </div>
         </div>
@@ -40,8 +41,10 @@
           <p class="lot-item__form-item form__item <?=isset($errors['cost']) ? 'form__item--invalid' : ''?>">
             <label for="cost">Ваша ставка</label>
             <input id="cost" type="text" name="cost" placeholder="Ваша ставка"
-            value="<?=htmlspecialchars($bet['cost'])?>">
+            value="<?=(intVal($bet['cost']) === 0) ? $bet_min : htmlspecialchars($bet['cost'])?>">
+            <?php if (isset($errors['cost'])) : ?>
             <span class="form__error"><?=$errors['cost']?></span>
+            <?php endif; ?>
           </p>
           <!-- Запомним id лота для верификации формы -->
           <input class="visually-hidden" type="text" name="lot-id" value="<?=$lot['id']?>">

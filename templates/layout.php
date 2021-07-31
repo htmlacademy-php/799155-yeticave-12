@@ -42,7 +42,7 @@
         <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
         <nav class="user-menu">
         <!-- PHP код для показа меню и данных пользователя -->
-            <?php if ($is_auth == 1) : ?>
+            <?php if ($is_auth === 1) : ?>
                 <div class="user-menu__logged">
                     <p><?=$user_name;?></p>
                     <a class="user-menu__bets" href="my-bets.php">Мои ставки</a>

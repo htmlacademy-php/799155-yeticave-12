@@ -72,11 +72,11 @@ function getTimeStr($dt_add, $dt_fin) : string
 
     if ($months > 0 || $days > 1) {
         return date("d.m.Y в H:i", $add);
-    } elseif ($days == 1) {
+    } elseif ($days === 1) {
         return date("вчера, в H:i", $add);
     } elseif ($hours > 1) {
         return date("в H:i", $add);
-    } elseif ($hours == 1) {
+    } elseif ($hours === 1) {
         return date("час назад");
     }
     if ($mins === 0) {
@@ -153,7 +153,7 @@ function validateFilled($key, $data, $message)
 */
 function isCorrectId($key, $data, $message)
 {
-    if (!isset($data[$key]) or intVal($data[$key]) == 0) {
+    if (!isset($data[$key]) or intVal($data[$key]) === 0) {
         return $message;
     }
     return null;
@@ -240,19 +240,19 @@ function validatePassword($passKey, $emailKey, $data)
         $passwordHash = $repo->getUserPwd($userId);
         if (!password_verify($data[$passKey], $passwordHash)) {
             return "Введен неверный пароль";
+        } else {
+            return null;
         }
-    } else {
-        return "Пользователь не найден";
     }
-    return null;
+    return "Пользователь не найден";
 }
 
 /**
  * Производит валидацию элемента массива, содержащего ставку, по ключу
  *
- * @param string $betKey значение ключа элемента массива, соержащего ставку
- * @param string $lotKey значение ключа элемента массива, содержащего id лота
- * @param array $data массив с данными
+ * @param string $betKey значение ключа элемента массива $_POST, соержащего ставку
+ * @param string $lotKey значение ключа элемента массива $_POST, содержащего id лота
+ * @param array $data данные из массива $_POST
  *
  * @return string, если величина ставки не отвечает требованиям,
  * null, если валидация прошла успешно
@@ -269,8 +269,6 @@ function validateBet($betKey, $lotKey, $data)
     }
     if ($data[$betKey] < $nextBet) {
         return "Следующая ставка должна быть не меньше " . $nextBet;
-    } elseif (($data[$betKey] - $maxBet) % $lot['bet_step'] > 0) {
-        return "Шаг ставки должен быть равен " . $lot['bet_step'];
     }
     return null;
 }

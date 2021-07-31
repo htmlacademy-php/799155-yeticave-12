@@ -7,6 +7,7 @@ require_once 'session.php';
 $layoutContent = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $bets = array();
     if ($repo->isOk()) {
         $catId = $repo->getEscapeStr($_GET['cat']);
         $cat = $repo->getCat($catId);
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'nav' => $navContent,
             'is_auth' => $isAuth,
             'content' => $lotsContent,
+            'search' => '',
             'cats' => $cats,
             'title' => $title,
             'user_name' => $userName,

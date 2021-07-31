@@ -16,7 +16,7 @@
         </h3>
         <div class="lot__state">
           <div class="lot__rate">
-            <?php if ($lot['bets_count'] == 0) : ?>
+            <?php if ($lot['bets_count'] === 0) : ?>
             <span class="lot__amount">Стартовая цена</span>
             <?php else : ?>
             <span class="lot__amount"><?=$lot['bets_count'] .

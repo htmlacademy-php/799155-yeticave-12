@@ -33,14 +33,14 @@ $userRules = [
     }
 ];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($_POST as $key => $value) {
         $user[$key] = $repo->getEscapeStr($value);
     }
     //валидация полей формы
     Yeticave\Form::validateFields($userRules, $user);
     $errors = Yeticave\Form::getErrors();
-    if ($repo->isOk() and  count($errors) == 0) {
+    if ($repo->isOk() and  count($errors) === 0) {
         //поищем юзера с этим email'ом
         $author = $repo->getUser($user['email']);
         if ($user) {
@@ -87,6 +87,11 @@ if ($repo->isOk()) {
             'title' => $title,
             'user_name' => $userName,
             'nav' => $navContent,
+            'search' => '',
+            'url' => $url,
+            'pagesCount' => $pagesCount,
+            'curPage' => $curPage,
+            'pages' => $pages
         ]);
     }
 }
