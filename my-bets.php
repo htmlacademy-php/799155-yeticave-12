@@ -15,6 +15,10 @@ $navContent = includeTemplate('nav.php', [
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($authorId and $isAuth) {
         $bets = $repo->getUserBets($authorId);
+        foreach($bets as $bet) {
+            $lot = $repo->getLot($bet['lot_id'], true);
+            $bet['dt_expired'] = $lot['dt_expired'];
+        }
         $count = count($bets);
         if ($count > 0) {
             $pagesCount = ceil($count / $betsPerPage);

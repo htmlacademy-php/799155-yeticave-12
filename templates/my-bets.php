@@ -4,9 +4,12 @@
   <h2>Мои ставки</h2>
   <table class="rates__list">
   <?php foreach ($bets as $bet) :?>
+      <?php $time_left = getTimeLeft(strip_tags($bet['dt_expired']));?>
       <?php $rates_class = '';?>
-      <?php if ($bet['winner_id'] !== null) :?>
-            <?php $rates_class = $bet['winner_id'] === $user_id ? 'rates__item--win' : 'rates__item--end'?>
+      <?php if ($bet['winner_id'] === $user_id) :?>
+            <?php $rates_class = 'rates__item--win'?>
+      <?php elseif ($time_left === false) :?>
+            <?php $rates_class = 'rates__item--end'?>     
       <?php endif;?>
     <tr class="rates__item <?=$rates_class?>">
       <td class="rates__info">
@@ -17,7 +20,7 @@
             <h3 class="rates__title">
             <a href="lot.php?id=<?=intVal($bet['lot_id'])?>"><?=htmlspecialchars($bet['lot_name'])?></a>
             </h3>
-            <?php if ($bet['winner_id'] !== null and $bet['winner_id'] === $user_id) :?>
+            <?php if ($bet['winner_id'] === $user_id) :?>
             <p><?=htmlspecialchars($bet['contact'])?></p>
             <?php endif;?>
         </div>
@@ -26,8 +29,7 @@
         <?=htmlspecialchars($bet['cat_name']);?>
       </td>
       <td class="rates__timer">
-        <?php $time_left = getTimeLeft(strip_tags($bet['dt_expired']));?>
-        <?php if ($bet['winner_id'] !== null and $bet['winner_id'] === $user_id) :?>
+        <?php if ($bet['winner_id'] === $user_id) :?>
         <div class="timer timer--win">
             <?='Ставка выиграла'?>
         <?php elseif ($time_left === false) :?>
