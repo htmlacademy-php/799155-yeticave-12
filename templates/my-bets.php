@@ -15,7 +15,7 @@
       <td class="rates__info">
         <div class="rates__img">
           <img src="<?=htmlspecialchars($bet['img_url'])?>" width="54" height="40"
-               alt="<?=htmlspecialchars(str_getcsv($bet['lot_name'], " ")[0])?>">
+               alt="<?=htmlspecialchars(explode(" ", $bet['lot_name'])[0])?>">
         </div>
         <div>
             <h3 class="rates__title">

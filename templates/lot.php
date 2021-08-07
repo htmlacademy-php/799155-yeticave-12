@@ -10,7 +10,7 @@
     <div class="lot-item__left">
       <div class="lot-item__image">
         <img src="<?=htmlspecialchars($lot['img_url'])?>" width="730" height="548"
-        alt="<?=htmlspecialchars(str_getcsv($lot['name'], " ")[0])?>">
+        alt="<?=htmlspecialchars(explode(" ", $lot['name'])[0])?>">
       </div>
       <p class="lot-item__category">Категория: <span><?=htmlspecialchars($lot['cat_name'])?></span></p>
       <p class="lot-item__description"><?=htmlspecialchars($lot['descr'])?></p>
