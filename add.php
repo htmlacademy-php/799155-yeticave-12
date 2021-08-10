@@ -92,12 +92,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($repo->isOk() and  count($errors) === 0) {
         //запишем данные лота в базу
-        $repo->addNewLot($lot, $authorId);
-        //если все ок, переместимся на станицу лота
-        if ($repo->isOk()) {
-            $id = $repo->getLastId();
-            header("Location:/lot.php?id=" . $id);
-            exit();
+        if ($repo->addNewLot($lot, $authorId) === true) {
+            //если все ок, переместимся на станицу лота
+            if ($repo->isOk()) {
+                $id = $repo->getLastId();
+                header("Location:/lot.php?id=" . $id);
+                exit();
+            }
+        } else {
+            $errors['lot-name'] = 'Неизвестная ошибка. Данные лота не добавлены в базу';
         }
     }
 }
