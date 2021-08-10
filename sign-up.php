@@ -60,6 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //переход на страницу авторизации
             header("Location:/login.php");
             exit();
+        } else {
+            $errors['password'] = 'Неизвестная ошибка. Пользователь не зарегистрирован.';
         }
     }
 }

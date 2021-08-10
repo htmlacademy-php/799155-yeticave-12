@@ -22,10 +22,7 @@ $userRules = [
         return $error;
     },
     'password' => function ($user) {
-        $error = validateFilled('password', $user, 'Введите пароль, не менее 6 символов');
-        if ($error === null) {
-            $error = isCorrectLength('password', $user, 6, 16);
-        }
+        $error = validateFilled('password', $user, 'Введите пароль');
         if ($error === null) {
             $error = validatePassword('password', 'email', $user);
         }
